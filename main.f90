@@ -253,14 +253,10 @@ PROGRAM REION
 
   !------------------------------
 
-!!$  mhalo_high = 1.0e3_prec ! 10^10 M_solar 
-!!$  mhalo_low = 1.0_prec ! 10^10 M_solar 
-
   mhalo_high = 0.5e-3_prec ! 10^10 M_solar 
   mhalo_low = 1.0e-6_prec ! 10^10 M_solar 
 
   BinsPerDecade = 100.0_prec
-  ! BinsPerDecade = 30.0_prec
   log_multiplier = 10.0_prec**(1.0_prec/BinsPerDecade)
   n_halocalc = int(log10(mhalo_high/mhalo_low)/log10(log_multiplier))+1 
 
@@ -464,7 +460,6 @@ PROGRAM REION
 
      limsfrc = limsfrc * 1.0e10_prec ! M_solar yr^-1 Mpc^-3 
      limsfrh = limsfrh * 1.0e10_prec ! M_solar yr^-1 Mpc^-3 
-
      limsfr = q*limsfrh + (1.0_prec-q)*limsfrc
 
      !-------------------------
@@ -547,24 +542,11 @@ PROGRAM REION
           &lmfp*(1.0_prec+z)**3*(cmbympc**2)  ! J/yr 
      gamma_heat = gammaph*nhi*(1.0_prec+z)**3/q ! J mpc^-3 yr^-1 
 
-!!$     heatcool = 2.0_prec*(gamma_heat-gamma_totc)/&
-!!$          &(3.0_prec*nh_proper*kboltz) ! K yr^-1 
      heatcool = 2.0_prec*(gamma_heat-gamma_totc)/&
           &(3.0_prec*nh_proper*(1.0_prec+x_ii)*kboltz) ! K yr^-1 
      temph = (temph + dz*dtdz(z)*heatcool) / &
           &(1.0_prec + 2.0_prec*hubp(z)*dz*dtdz(z)+ &
           &((x_ii-oldxii)/(1.0_prec+oldxii)))
-!!$     if (preoverlap) then 
-!!$        temph = (temph + dz*dtdz(z)*heatcool) / &
-!!$             &(1.0_prec + 2.0_prec*hubp(z)*dz*dtdz(z)+ &
-!!$             &((x_ii-x2init)/(1.0_prec+x_ii)))
-!!$        !temph = abs(temph)
-!!$     else 
-!!$        temph = (temph + dz*dtdz(z)*heatcool) / &
-!!$             &(1.0_prec + 2.0_prec*hubp(z)*dz*dtdz(z)+ &
-!!$             &((x_ii-oldxii)/(1.0_prec+x_ii)))
-!!$        !temph = abs(temph)
-!!$     end if
      tempc = tempc+dz*dtempcdz(z) ! K
 
      mu_MeanMolWt = 1.0_prec / (1.0_prec + x_ii)
@@ -579,13 +561,9 @@ PROGRAM REION
      vcirc = sqrt(2.0_prec*kboltz*temph/mproton)
 
      ! Calculate corresponding Jeans mass. 
-     ! jnsln = jeans_length(temph,z) ! Mpc 
      jnsln = jeans_length(temphva,z) ! Mpc 
      global_t = q*temph+(1.0_prec-q)*tempc
      sigmab = sigma_baryon(z, global_t) 
-     ! sigmab = sigma_baryon(z, temphva) 
-
-     ! sigmab = sigma_baryon(z, temph) 
      jnsm = (4.0_prec*pi*rho_baryon*jnsln**3)/3.0_prec ! 10^10 M_solar
      jmharr(countr) = jnsm
 
@@ -599,7 +577,6 @@ PROGRAM REION
         oldfm = f_m 
         f_m = igmfpreo()
         fv = igmvfrac(igmdcrit) 
-        ! lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-q*fv)**(2.0_prec/3.0_prec)) ! Mpc 
         lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-fv)**(2.0_prec/3.0_prec)) ! Mpc 
 
         dfm = f_m - oldfm 
@@ -639,7 +616,6 @@ PROGRAM REION
 
         r = clumpfac(igmdcrit)
         fv = igmvfrac(igmdcrit) 
-        ! lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-q*fv)**(2.0_prec/3.0_prec)) ! mpc 
         lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-fv)**(2.0_prec/3.0_prec)) ! mpc 
      end if
 
@@ -680,7 +656,6 @@ PROGRAM REION
      m_str = m_str + dm_str ! 10^10 M_solar Mpc^-3 
      m_ism = m_ism + dm_ism ! 10^10 M_solar Mpc^-3 
 
-     ! fb_struct = (m_str + m_ism ) / m_igm 
      fb_struct = (m_str + m_ism ) / (m_igm + m_str + m_ism) 
 
      xigm_fe = xigm_fe + dz*dtdz(z)*ofl*(xism_fe-xigm_fe)/m_igm ! dimensionless
@@ -825,7 +800,6 @@ PROGRAM REION
              ((10.0_prec*hb)**(3.0_prec/eta)) ! 10^10_Msolar s^-1 
         mcooldot = mcooldot * yrbys ! 10^10_Msolar yr^-1 
 
-        ! mcoolgas_halosc(i) = mcoolgas_halosc(i) + dz*dtdz(z)*mcooldot ! 10^10 M_solar 
         mcoolgas_halosc(i) = dz*dtdz(z)*mcooldot ! 10^10 M_solar 
 
         ! Expression for galaxy dynamical time is taken from Bouch\'e
@@ -835,13 +809,7 @@ PROGRAM REION
         if (strpop_halosc(i) == 3) then 
            mstardot_insitu = fstar_pop3 * mcoolgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
         else 
-           ! mstardot_insitu = fstar * mgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
            mstardot_insitu = fstar * mcoolgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
-!!$           ! if (i > 225) then 
-!!$           decr = 1.0 / (1.0+2.0e2_prec*exp((-z**2)/4.0_prec))
-!!$           mcoolgas = mgas_halosc(i) * decr 
-!!$           mstardot_insitu = fstar * mcoolgas / tdyn ! 10^10 M_solar yr^-1
-!!$           !end if
         end if
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
         return_fraction = ejfrac_nonira(z,1,i)
@@ -919,22 +887,18 @@ PROGRAM REION
            febyh_halosc(i) = 0.0_prec 
         else 
            febyh_halosc(i) = log10(abs(mFe_halosc(i)/mH_halos)) + 2.78 
-           ! febyh_halosc(i) = log10(abs(mFe_halosc(i)/mO_halosc(i))) + 0.91
         end if
 
         if (mC_halosc(i)==0.0_prec) then 
            cbyh_halosc(i) = 0.0_prec 
         else 
-           ! cbyh_halosc(i) = log10(abs(mC_halosc(i)/mH_halos)) + 2.36
            cbyh_halosc(i) = log10(abs(mC_halosc(i)/mFe_halosc(i))) - 0.41
-           ! cbyh_halosc(i) = log10(abs(mC_halosc(i)/mO_halosc(i))) + 0.5
         end if
 
         if (mO_halosc(i)==0.0_prec) then 
            obyh_halosc(i) = 0.0_prec 
         else 
            obyh_halosc(i) = log10(abs(mO_halosc(i)/mH_halos)) + 1.87
-           ! obyh_halosc(i) = log10(abs(mO_halosc(i)/mFe_halosc(i))) - 0.91
         end if
      end do
 
@@ -1000,7 +964,6 @@ PROGRAM REION
              ((10.0_prec*hb)**(3.0_prec/eta)) ! 10^10_Msolar s^-1 
         mcooldot = mcooldot * yrbys ! 10^10_Msolar yr^-1 
 
-        ! mcoolgas_halosh(i) = mcoolgas_halosh(i) + dz*dtdz(z)*mcooldot ! 10^10 M_solar 
         mcoolgas_halosh(i) = dz*dtdz(z)*mcooldot ! 10^10 M_solar 
 
         ! Expression for galaxy dynamical time is taken from Bouch\'e
@@ -1010,13 +973,7 @@ PROGRAM REION
         if (strpop_halosh(i) == 3) then 
            mstardot_insitu = fstar_pop3 * mcoolgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
         else 
-           ! mstardot_insitu = fstar * mgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
            mstardot_insitu = fstar * mcoolgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
-!!$           ! if (i > 225) then 
-!!$           decr = 1.0 / (1.0+2.0e2_prec*exp((-z**2)/4.0_prec))
-!!$           mcoolgas = mgas_halosh(i) * decr 
-!!$           mstardot_insitu = fstar * mcoolgas / tdyn ! 10^10 M_solar yr^-1
-!!$           ! end if
         end if
         sfrarr_halocalc_hot(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
@@ -1104,22 +1061,18 @@ PROGRAM REION
            febyh_halosh(i) = 0.0_prec 
         else 
            febyh_halosh(i) = log10(abs(mFe_halosh(i)/mH_halos)) + 2.78 
-           ! febyh_halosh(i) = log10(abs(mFe_halosh(i)/mO_halosh(i))) + 0.91
         end if
 
         if (mC_halosh(i)==0.0_prec) then 
            cbyh_halosh(i) = 0.0_prec 
         else 
-           ! cbyh_halosh(i) = log10(abs(mC_halosh(i)/mH_halos)) + 2.36
            cbyh_halosh(i) = log10(abs(mC_halosh(i)/mFe_halosh(i))) - 0.41
-           ! cbyh_halosh(i) = log10(abs(mC_halosh(i)/mO_halosh(i))) + 0.5
         end if
 
         if (mO_halosh(i)==0.0_prec) then 
            obyh_halosh(i) = 0.0_prec 
         else 
            obyh_halosh(i) = log10(abs(mO_halosh(i)/mH_halos)) + 1.87
-           ! obyh_halosh(i) = log10(abs(mO_halosh(i)/mFe_halosh(i))) - 0.91
         end if
      end do
 
@@ -1144,7 +1097,6 @@ PROGRAM REION
      write (79,'(F4.1,270E11.3E2)') z, q*mstardot_halosh + (1.0_prec-q)*sfrcontrib_halosc 
      write (80,'(F4.1,270E11.3E2)') z, sfrcontrib_halosc 
 
-     ! write (49,'(F4.1,270E11.3E2)') z, aux_halosh
      write (49,'(F4.1,270E11.3E2)') z, mstardot_halosc
 
      write (50,'(F4.1,270E11.3E2)') z, q*m_halosh + (1.0_prec-q)*m_halosc 
