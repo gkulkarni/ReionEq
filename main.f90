@@ -760,35 +760,6 @@ PROGRAM REION
 
      !-----------------------------
 
-     ! Calculate the MDF.
-!!$     if (z == final_redshift) then 
-!!$        febyh = -6.0_prec
-!!$        dfebyh = 0.2_prec
-!!$        do 
-!!$           if (febyh > -2.0_prec) exit 
-!!$           call interpolate2(zfearr, febyharr, febyh, zfe)
-!!$
-!!$           psi = getsfr2(zfe)
-!!$           ! psi = sfr_rollinde_pop2(zfe) ! M_solar yr^-1 Mpc^-3
-!!$           totalmstar = psi*dz*dtdz(zfe) ! M_solar Mpc^-3
-!!$
-!!$           call interpolate2(tarr, zarr, zfe, tfe) ! yr
-!!$           call interpolate2(tarr, zarr, z, tnow) ! yr
-!!$           age_fe = (tnow-tfe)*1.0e-6_prec ! Myr
-!!$
-!!$           call interpolate2(stellar_mass, stellar_age, age_fe, mstar_fe) ! [mstar_fe] = M_solar
-!!$           if (mstar_fe > minf_pop3) then 
-!!$              write (0,*) 'Warning (MDF): mstar_fe > minf_pop3' 
-!!$           end if
-!!$
-!!$           write (37, *) febyh, nstar(mstar_fe, totalmstar)
-!!$
-!!$           febyh = febyh + dfebyh 
-!!$        end do
-!!$     end if
-
-     !-----------------------------
-
      mminc = getjmc(z)
      mminh = getjmh(z)
      write (47, '(F4.1,3E11.3E2)') z, mminc, mminh, q*mminh+(1.0_prec-q)*mminc
