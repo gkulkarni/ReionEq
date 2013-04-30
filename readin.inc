@@ -244,7 +244,7 @@
 
   j = 1 
   open(11, file='/home/girish/reion-eq/data/SD93_zero.cie', status='old', action='read') 
-  sd93_febyh(j) = 0.0_prec 
+  sd93_febyh(j) = -10.0_prec ! Just a very small number (supposed to be -Infinity).
   do i = 1, 90 
      read (11, *) temp_sd93, lambda_sd93 
      sd93_temp(i) = temp_sd93 
