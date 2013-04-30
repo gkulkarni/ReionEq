@@ -26,7 +26,7 @@ MODULE STORAGE
        &pop3_stellar_age, pop3_stellar_ngamma, ismz_halosc, &
        &ismz_halosh, aux_halosc, aux_halosh, nofmc, nofmh, &
        &t_zn, t_si, t_fe, t_o, sd93_tvir, sd93_coolrate, halol1500c, &
-       &halol1500h, sfrcontrib_halosc, sfrcontrib_halosh
+       &halol1500h, sfrcontrib_halosc, sfrcontrib_halosh, sd93_temp, sd93_febyh
   integer, dimension(:), allocatable :: strpop_halosc, strpop_halosh 
   INTEGER, DIMENSION(1) :: ALOC, ALC
   REAL(KIND = PREC), DIMENSION(MAXINT) :: ALIST, BLIST, ELIST, &
@@ -43,7 +43,7 @@ MODULE STORAGE
        &HaloMetalAbundance 
   INTEGER :: LCN, COUNTR, POSTOCOUNTER 
   REAL(KIND = PREC), DIMENSION(:,:), ALLOCATABLE :: LBURST, sfrarr_halocalc_hot, &
-       &sfrarr_halocalc_cold, sfrarr_halocalc 
+       &sfrarr_halocalc_cold, sfrarr_halocalc, sd93_lambda
   integer, dimension(:,:), allocatable :: halopop_hot, halopop_cold 
   REAL(KIND=PREC), DIMENSION(:,:,:), ALLOCATABLE :: YIELDS 
 

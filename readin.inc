@@ -189,11 +189,6 @@
   YIELDS(3,1,1) = 0.01_prec
   YIELDS(4,1,1) = 0.1_prec
 
-!!$  YIELDS(1,1,1) = -10.0_prec
-!!$  YIELDS(2,1,1) = -5.0_prec
-!!$  YIELDS(3,1,1) = -3.0_prec
-!!$  YIELDS(4,1,1) = -2.0_prec
-
   OPEN(11, FILE='/home/girish/reion-eq/data/yields.wwhw.Z0', STATUS='OLD', ACTION='READ')
   DO I = 2, 17
      READ(11, *) YIELD_RECORD 
@@ -241,3 +236,6 @@
      sd93_coolrate(i) = sdl ! J m^3 s^-1 
   end do
 
+  !-------------------------
+
+  allocate(sd93_temp(90), sd93_febyh(8), sd93_lambda(90,8))
