@@ -1,12 +1,15 @@
+*.o
+reion
 CVS
 scratch 
 data
 plots
 result 
-*o 
-*out
+*.out
 *~
 popsyn
 .DS_Store
 todo
+*.mod
+foo
 
