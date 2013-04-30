@@ -45,7 +45,8 @@ PROGRAM REION
        &term2, global_t, fb_struct, mNdot, mSidot, mZndot, mMgdot,&
        &ejrate_n, ejrate_si, ejrate_mg, ejrate_zn, foo, decr, mcoolgas,&
        &sdt, sdl, HaloVirialTemp, GasCoolingRate, eta, p, hb, fb, ft,&
-       &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr
+       &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
+       &temp_sd93, lambda_sd93 
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -84,6 +85,7 @@ PROGRAM REION
 
   ! Set initial conditions. 
   INCLUDE 'readin.inc' 
+  STOP
 
   ! NGAMMA is calculated from Starburst99 model
   ! `reion-generic' by popsyn/ngtot.f90.
