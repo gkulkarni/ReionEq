@@ -765,7 +765,6 @@ PROGRAM REION
      write (47, '(F4.1,3E11.3E2)') z, mminc, mminh, q*mminh+(1.0_prec-q)*mminc
 
      ! The do-loop below evolves ``cool'' haloes i. e. haloes in H I regions. 
-
      do i = 1, n_halocalc
 
         if (ismz_halosc(i) < METALLICITY_POP3TRANS) then 
@@ -778,22 +777,6 @@ PROGRAM REION
 
         mdot = MassAccretionRate(z, m_halosc(i)*1.0e10_prec) ! 10^10 M_solar yr^-1
         m_halosc(i) = m_halosc(i) + dz*dtdz(z)*mdot ! 10^10 M_solar yr^-1
-
-        !----------------------------
-
-!!$        if (m_halosc(i) < mminc) then 
-!!$           mstar_halosc(i) = 0.0_prec 
-!!$           mstardot_halosc(i) = 0.0_prec 
-!!$           mgas_halosc(i) = 0.0_prec 
-!!$           mmetal_halosc(i) = 0.0_prec 
-!!$           mC_halosc(i) = 0.0_prec 
-!!$           mFe_halosc(i) = 0.0_prec 
-!!$           mO_halosc(i) = 0.0_prec 
-!!$           febyh_halosc(i) = 0.0_prec 
-!!$           cbyh_halosc(i) = 0.0_prec 
-!!$           obyh_halosc(i) = 0.0_prec 
-!!$           cycle 
-!!$        end if
 
         !----------------------------
 
@@ -969,22 +952,6 @@ PROGRAM REION
 
         mdot = MassAccretionRate(z, m_halosh(i)*1.0e10_prec) ! 10^10 M_solar yr^-1
         m_halosh(i) = m_halosh(i) + dz*dtdz(z)*mdot ! 10^10 M_solar yr^-1
-
-        !----------------------------
-
-!!$        if (m_halosh(i) < mminh) then 
-!!$           mstar_halosh(i) = 0.0_prec 
-!!$           mstardot_halosh(i) = 0.0_prec 
-!!$           mgas_halosh(i) = 0.0_prec 
-!!$           mmetal_halosh(i) = 0.0_prec 
-!!$           mC_halosh(i) = 0.0_prec 
-!!$           mFe_halosh(i) = 0.0_prec 
-!!$           mO_halosh(i) = 0.0_prec 
-!!$           febyh_halosh(i) = 0.0_prec 
-!!$           cbyh_halosh(i) = 0.0_prec 
-!!$           obyh_halosh(i) = 0.0_prec 
-!!$           cycle
-!!$        end if
 
         !----------------------------
 
