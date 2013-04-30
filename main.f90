@@ -15,7 +15,8 @@ PROGRAM REION
        &ACCRATE, ejrate, sfr_rollinde_pop3, sfr_rollinde_pop2, &
        &interpolate2, getsfr2, getsfr3, getjmc, getjmh, haloyield_nonira, &
        &rtnewt, newtondelta, newtonfm, igmfposto, ejfrac_nonira, outfrac_nonira, &
-       &haloyield_species_nonira, counter, ngammafrac, haloyield_species, hallum2
+       &haloyield_species_nonira, counter, ngammafrac, haloyield_species, &
+       &hallum2, bi_interpolate2 
   IMPLICIT NONE 
 
   REAL(KIND=PREC) :: A, B, BOUND, C, DFM, DGRF, DLT, DLTHI, DLTLO, &
@@ -46,7 +47,7 @@ PROGRAM REION
        &ejrate_n, ejrate_si, ejrate_mg, ejrate_zn, foo, decr, mcoolgas,&
        &sdt, sdl, HaloVirialTemp, GasCoolingRate, eta, p, hb, fb, ft,&
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
-       &temp_sd93, lambda_sd93 
+       &temp_sd93, lambda_sd93, t_test, fe_test, l_test 
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -790,6 +791,16 @@ PROGRAM REION
              ((1.0_prec+z)/10.0_prec) ! K 
 
         call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+
+        t_test = 2.0e4 ! K 
+        fe_test = 0.0 
+
+        call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, t_test, fe_test, l_test)
+        print *, 't_test=', t_test 
+        print *, 'fe_test=', fe_test 
+        print *, 'l_test=', l_test 
+
+        STOP
 
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
