@@ -1,0 +1,12 @@
+CVS
+scratch 
+data
+plots
+result 
+*o 
+*out
+*~
+popsyn
+.DS_Store
+todo
+

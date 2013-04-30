@@ -1,0 +1,48 @@
+
+FUNCTION RTBIS(FUNC, XLO, XHI, TOL, CALLER) 
+
+  ! Find root by bisection method.
+
+  USE CONSTANTS; IMPLICIT NONE 
+  REAL(KIND=PREC), INTENT(IN) :: XLO, XHI, TOL 
+  CHARACTER(LEN=*), INTENT(IN) :: CALLER 
+  REAL(KIND=PREC) :: RTBIS 
+  INTERFACE
+     FUNCTION FUNC(X)
+       USE CONSTANTS; IMPLICIT NONE
+       REAL(KIND=PREC), INTENT(IN) :: X
+       REAL(KIND=PREC) :: FUNC
+     END FUNCTION FUNC
+  END INTERFACE
+
+  INTEGER, PARAMETER :: JMAX=500 
+  REAL(KIND=PREC) :: DX, XMID, F1, F2, FMID, X1, X2  
+  INTEGER :: I 
+
+  X1 = XLO
+  X2 = XHI 
+  F1 = FUNC(X1) 
+  F2 = FUNC(X2) 
+  IF(F1*F2 >= 0.0_PREC) THEN 
+     WRITE (0,'(2A)') CALLER, ': RTBIS -- root not bracketed.'
+     RETURN
+  END IF
+
+  DO I = 1, JMAX 
+     DX = ABS(X2-X1) 
+     XMID = (X1+X2)*0.5_PREC
+     FMID = FUNC(XMID)
+     IF (DX<TOL .OR. FMID==0.0_PREC) EXIT 
+     IF(FMID*F1 < 0.0_PREC) THEN 
+        X2 = XMID 
+        F2 = FUNC(X2) 
+     ELSE 
+        X1 = XMID 
+        F1 = FUNC(X1) 
+     END IF
+  END DO
+
+  RTBIS = XMID 
+
+END FUNCTION RTBIS
+

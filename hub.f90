@@ -1,0 +1,42 @@
+
+  ! File: hub.f90
+  ! Cre: 2010-04-07
+  ! Mod: $Date: 2010/04/11 10:08:27 $; $Revision: 1.1.1.1 $ 
+
+FUNCTION HUBP(Z) 
+
+  ! Return value of the Hubble constant at redshift Z.
+  USE CONSTANTS; IMPLICIT NONE
+  REAL(KIND=PREC), INTENT(IN) :: Z
+  REAL(KIND=PREC) :: HUBP
+
+  HUBBLE_0 = 1.023E-10_PREC*SMALLH
+  HUBP = HUBBLE_0*SQRT(OMEGA_NR*(1.0_PREC + Z)**3+OMEGA_LAMBDA) ! yr^-1
+
+END FUNCTION HUBP
+
+FUNCTION DZDT(Z) 
+
+  ! Return value of DZDT ("ZDOT") at redshift Z.
+  USE CONSTANTS
+  USE INTERFACES, ONLY : HUBP
+  IMPLICIT NONE
+  REAL(KIND=PREC), INTENT(IN) :: Z
+  REAL(KIND=PREC) :: DZDT
+
+  DZDT = -(1.0_PREC+Z)*HUBP(Z) ! yr^-1
+
+END FUNCTION DZDT
+
+FUNCTION DTDZ(Z) 
+
+  ! Return value of DTDZ at redshift Z.
+  USE CONSTANTS
+  USE INTERFACES, ONLY : DZDT
+  IMPLICIT NONE
+  REAL(KIND=PREC), INTENT(IN) :: Z
+  REAL(KIND=PREC) :: DTDZ
+
+  DTDZ = 1.0_PREC/DZDT(Z) ! yr 
+
+END FUNCTION DTDZ

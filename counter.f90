@@ -1,0 +1,17 @@
+FUNCTION COUNTER(Z) 
+
+  ! File: counter.f90
+  ! Cre: 2010-04-07
+  ! Mod: $Date: 2010/04/11 10:08:27 $; $Revision: 1.1.1.1 $ 
+
+  USE CONSTANTS; IMPLICIT NONE
+  REAL(KIND = PREC) :: Z
+  INTEGER :: COUNTER
+  
+  IF (Z>0) THEN
+     COUNTER = FLOOR((Z - TABGRF_ZINITIAL) / TABGRF_DZ) + 1 
+  ELSE
+     COUNTER = 1
+  END IF
+
+END FUNCTION COUNTER

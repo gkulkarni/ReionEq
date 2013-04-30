@@ -1,0 +1,14 @@
+FUNCTION NUINT(NU)
+
+  ! File: nuint.f90
+  ! Cre: 2010-04-07
+  ! Mod: $Date: 2010/04/11 10:08:27 $ ($Revision: 1.1.1.1 $) 
+
+  USE CONSTANTS; IMPLICIT NONE 
+  REAL(KIND = PREC), INTENT(IN) :: NU 
+  REAL(KIND = PREC) :: NUINT 
+
+  NUINT = SQRT(2.0_PREC/PI)*EXP(-NU*NU/2.0_PREC)*NU*NU 
+
+END FUNCTION NUINT
+
