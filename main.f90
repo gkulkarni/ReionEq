@@ -89,7 +89,6 @@ PROGRAM REION
   ! `reion-generic' by popsyn/ngtot.f90.
   NGAMMA = 2.82E70_PREC ! (10^10 M_solar)^-1 
   NGAMMA_POP2 = NGAMMA 
-  ! NGAMMA_POP3 = 2.82E71_PREC ! (10^10 M_solar)^-1 
   ngamma_pop3 = ngammafrac(z)*1.0e10 ! (10^10 M_solar)^-1
 
   Z = INITIAL_REDSHIFT 
@@ -132,7 +131,6 @@ PROGRAM REION
 
   TEMPHVA = TEMPH ! K 
 
-  ! JNSLN = JEANS_LENGTH(TEMPH,Z) ! Mpc 
   JNSLN = JEANS_LENGTH(TEMPHVA,Z) ! Mpc 
 
   JNSM = (4.0_PREC*PI*RHO_BARYON*JNSLN**3)/3.0_PREC ! 10^10 M_solar
@@ -155,7 +153,6 @@ PROGRAM REION
   r_local = r 
   F_M = IGMFPREO()
   FV = IGMVFRAC(IGMDCRIT) 
-  ! LMFP = q**(1.0_prec/3.0_prec)*LMFP0*JNSLN/((1.0_PREC-q*FV)**(2.0_PREC/3.0_PREC)) ! Mpc 
   LMFP = q**(1.0_prec/3.0_prec)*LMFP0*JNSLN/((1.0_PREC-FV)**(2.0_PREC/3.0_PREC)) ! Mpc 
 
   X2INIT = 1.2E-5_PREC/(SMALLH*OMEGA_B) ! dimensionless 
