@@ -246,7 +246,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93_zero.cie', status='old', action='read') 
   sd93_febyh(j) = 0.0_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_temp(i) = temp_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
@@ -258,7 +258,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-30.cie', status='old', action='read') 
   sd93_febyh(j) = -3.0_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -267,7 +267,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-20.cie', status='old', action='read') 
   sd93_febyh(j) = -2.0_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -276,7 +276,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-15.cie', status='old', action='read') 
   sd93_febyh(j) = -1.5_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -285,7 +285,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-10.cie', status='old', action='read') 
   sd93_febyh(j) = -1.0_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -294,7 +294,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-05.cie', status='old', action='read') 
   sd93_febyh(j) = -0.5_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -303,7 +303,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93-00.cie', status='old', action='read') 
   sd93_febyh(j) = 0.0_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
@@ -312,7 +312,7 @@
   open(11, file='/home/girish/reion-eq/data/SD93+05.cie', status='old', action='read') 
   sd93_febyh(j) = 0.5_prec 
   do i = 1, 90 
-     read, (11, *) temp_sd93, lambda_sd93 
+     read (11, *) temp_sd93, lambda_sd93 
      sd93_lambda(i,j) = lambda_sd93 
   end do
   close(11) 
