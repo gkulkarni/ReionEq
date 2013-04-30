@@ -792,7 +792,7 @@ PROGRAM REION
              ((Omega_nr/Omega_mz)*(Delta_c/(18.0_prec*pi*pi)))**(1.0_prec/3.0_prec)*&
              ((1.0_prec+z)/10.0_prec) ! K 
 
-        ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+!!$        call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
         call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
              &febyh_halosc(i), GasCoolingRate) ! J m^3 s^-1
         GasCoolingRate = abs(GasCoolingRate)
@@ -959,7 +959,7 @@ PROGRAM REION
              ((Omega_nr/Omega_mz)*(Delta_c/(18.0_prec*pi*pi)))**(1.0_prec/3.0_prec)*&
              ((1.0_prec+z)/10.0_prec) ! K 
 
-        ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+!!$        call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
         call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
              &febyh_halosh(i), GasCoolingRate) ! J m^3 s^-1
         GasCoolingRate = abs(GasCoolingRate)
