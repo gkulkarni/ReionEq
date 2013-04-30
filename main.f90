@@ -86,7 +86,7 @@ PROGRAM REION
 
   ! Set initial conditions. 
   INCLUDE 'readin.inc' 
-  STOP
+
 
   ! NGAMMA is calculated from Starburst99 model
   ! `reion-generic' by popsyn/ngtot.f90.
@@ -306,6 +306,8 @@ PROGRAM REION
   allocate(halol1500h(n_halocalc))
   allocate(sfrcontrib_halosh(n_halocalc)) 
 
+  febyh_halosc = -10.0_prec
+
   allocate(t_zn(n_halocalc), t_fe(n_halocalc), t_si(n_halocalc), t_o(n_halocalc))
 
   m = mhalo_low 
@@ -346,7 +348,7 @@ PROGRAM REION
   zlim = 10.0_prec 
   maglim = -18.0_prec 
   eta = 1.65_prec ! halo density profile index used in mcooldot below 
-          
+
   write (58,*) 'initial_redshift=', initial_redshift 
   write (58,*) 'final_redshift=', final_redshift 
   write (58,*) 'dz=', dz 
@@ -706,7 +708,7 @@ PROGRAM REION
      metarr(countr) = xism_tot/0.02_prec ! dimensionless 
 
      if (m_fe==0.0_prec) then 
-        fe_abundance = 0.0_prec 
+        fe_abundance = -10.0_prec 
      else 
         fe_abundance = log10(abs(m_fe/m_h)) + 2.78 
      end if
@@ -714,13 +716,13 @@ PROGRAM REION
      zfearr(countr) = z 
 
      if (m_c==0.0_prec) then 
-        c_abundance = 0.0_prec 
+        c_abundance = -10.0_prec 
      else 
         c_abundance = log10(abs(m_c/m_h)) + 2.36
      end if
 
      if (m_o==0.0_prec) then 
-        o_abundance = 0.0_prec 
+        o_abundance = -10.0_prec 
      else 
         o_abundance = log10(abs(m_o/m_h)) + 1.87
      end if
@@ -790,17 +792,9 @@ PROGRAM REION
              ((Omega_nr/Omega_mz)*(Delta_c/(18.0_prec*pi*pi)))**(1.0_prec/3.0_prec)*&
              ((1.0_prec+z)/10.0_prec) ! K 
 
-        call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
-
-        t_test = 2.0e4 ! K 
-        fe_test = 0.0 
-
-        call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, t_test, fe_test, l_test)
-        print *, 't_test=', t_test 
-        print *, 'fe_test=', fe_test 
-        print *, 'l_test=', l_test 
-
-        STOP
+        ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+        call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
+             &febyh_halosc(i), GasCoolingRate) ! J m^3 s^-1
 
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
@@ -894,19 +888,19 @@ PROGRAM REION
         mH_halos = 0.71*mgas_halosc(i) 
 
         if (mFe_halosc(i)==0.0_prec) then 
-           febyh_halosc(i) = 0.0_prec 
+           febyh_halosc(i) = -10.0_prec 
         else 
            febyh_halosc(i) = log10(abs(mFe_halosc(i)/mH_halos)) + 2.78 
         end if
 
         if (mC_halosc(i)==0.0_prec) then 
-           cbyh_halosc(i) = 0.0_prec 
+           cbyh_halosc(i) = -10.0_prec 
         else 
            cbyh_halosc(i) = log10(abs(mC_halosc(i)/mFe_halosc(i))) - 0.41
         end if
 
         if (mO_halosc(i)==0.0_prec) then 
-           obyh_halosc(i) = 0.0_prec 
+           obyh_halosc(i) = -10.0_prec 
         else 
            obyh_halosc(i) = log10(abs(mO_halosc(i)/mH_halos)) + 1.87
         end if
@@ -964,7 +958,9 @@ PROGRAM REION
              ((Omega_nr/Omega_mz)*(Delta_c/(18.0_prec*pi*pi)))**(1.0_prec/3.0_prec)*&
              ((1.0_prec+z)/10.0_prec) ! K 
 
-        call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+        ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+        call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
+             &febyh_halosh(i), GasCoolingRate) ! J m^3 s^-1
 
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
@@ -1068,19 +1064,19 @@ PROGRAM REION
         mH_halos = 0.71*mgas_halosh(i) 
 
         if (mFe_halosh(i)==0.0_prec) then 
-           febyh_halosh(i) = 0.0_prec 
+           febyh_halosh(i) = -10.0_prec 
         else 
            febyh_halosh(i) = log10(abs(mFe_halosh(i)/mH_halos)) + 2.78 
         end if
 
         if (mC_halosh(i)==0.0_prec) then 
-           cbyh_halosh(i) = 0.0_prec 
+           cbyh_halosh(i) = -10.0_prec 
         else 
            cbyh_halosh(i) = log10(abs(mC_halosh(i)/mFe_halosh(i))) - 0.41
         end if
 
         if (mO_halosh(i)==0.0_prec) then 
-           obyh_halosh(i) = 0.0_prec 
+           obyh_halosh(i) = -10.0_prec 
         else 
            obyh_halosh(i) = log10(abs(mO_halosh(i)/mH_halos)) + 1.87
         end if
