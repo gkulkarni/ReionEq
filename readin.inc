@@ -238,4 +238,84 @@
 
   !-------------------------
 
+  ! Read normalised cooling curve data from Sutherland and Dopita for
+  ! various metallicities.  Remember, we are using the CIE data.
   allocate(sd93_temp(90), sd93_febyh(8), sd93_lambda(90,8))
+
+  j = 1 
+  open(11, file='/home/girish/reion-eq/data/SD93_zero.cie', status='old', action='read') 
+  sd93_febyh(j) = 0.0_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_temp(i) = temp_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  ! No need to write anything onto temp_sd93 again as that column is
+  ! same in all files.
+  j = 2 
+  open(11, file='/home/girish/reion-eq/data/SD93-30.cie', status='old', action='read') 
+  sd93_febyh(j) = -3.0_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 3
+  open(11, file='/home/girish/reion-eq/data/SD93-20.cie', status='old', action='read') 
+  sd93_febyh(j) = -2.0_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 4
+  open(11, file='/home/girish/reion-eq/data/SD93-15.cie', status='old', action='read') 
+  sd93_febyh(j) = -1.5_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 5
+  open(11, file='/home/girish/reion-eq/data/SD93-10.cie', status='old', action='read') 
+  sd93_febyh(j) = -1.0_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 6
+  open(11, file='/home/girish/reion-eq/data/SD93-05.cie', status='old', action='read') 
+  sd93_febyh(j) = -0.5_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 7
+  open(11, file='/home/girish/reion-eq/data/SD93-00.cie', status='old', action='read') 
+  sd93_febyh(j) = 0.0_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+  j = 8
+  open(11, file='/home/girish/reion-eq/data/SD93+05.cie', status='old', action='read') 
+  sd93_febyh(j) = 0.5_prec 
+  do i = 1, 90 
+     read, (11, *) temp_sd93, lambda_sd93 
+     sd93_lambda(i,j) = lambda_sd93 
+  end do
+  close(11) 
+
+
+
