@@ -87,7 +87,6 @@ PROGRAM REION
   ! Set initial conditions. 
   INCLUDE 'readin.inc' 
 
-
   ! NGAMMA is calculated from Starburst99 model
   ! `reion-generic' by popsyn/ngtot.f90.
   NGAMMA = 2.82E70_PREC ! (10^10 M_solar)^-1 
@@ -307,6 +306,7 @@ PROGRAM REION
   allocate(sfrcontrib_halosh(n_halocalc)) 
 
   febyh_halosc = -10.0_prec
+  febyh_halosh = -10.0_prec
 
   allocate(t_zn(n_halocalc), t_fe(n_halocalc), t_si(n_halocalc), t_o(n_halocalc))
 
@@ -795,6 +795,7 @@ PROGRAM REION
         ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
         call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
              &febyh_halosc(i), GasCoolingRate) ! J m^3 s^-1
+        GasCoolingRate = abs(GasCoolingRate)
 
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
@@ -961,6 +962,7 @@ PROGRAM REION
         ! call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
         call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
              &febyh_halosh(i), GasCoolingRate) ! J m^3 s^-1
+        GasCoolingRate = abs(GasCoolingRate)
 
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
