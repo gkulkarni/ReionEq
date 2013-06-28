@@ -75,8 +75,8 @@ MODULE CONSTANTS
        &TABGRF_ZINITIAL = 0.0_PREC, &
        &TABGRF_DZ = 0.005_PREC, &
        &FSTAR = 0.002E0_PREC, &
-       &FSTAR_POP3 = 0.001E0_PREC, &
-!!$       &FSTAR_POP3 = 0.004E0_PREC, &
+!!$       &FSTAR_POP3 = 0.001E0_PREC, &
+       &FSTAR_POP3 = 0.004E0_PREC, &
        &IGMDCRIT_PREO = 60.0_PREC, & ! dimensionless; IGMDCRIT_PREO is the 
                                 ! critical density of IGM in the pre-overlap stage.  Only 
                                 ! regions with density less than this will be ionized in that
