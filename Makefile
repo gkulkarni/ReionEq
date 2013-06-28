@@ -33,6 +33,8 @@ FORHE = $(OBJECTS)
 
 FORSAMPLE = constants.o 
 
+FORDELTAT = constants.o interfaces.o hub.o 
+
 #readin.inc volav.inc 
 
 %.o: %.f90
@@ -61,6 +63,9 @@ yld : $(OBJECTS) main_yld.o readin.inc
 
 sample : $(FORSAMPLE) sample_ns.o 
 	$(FC) $(FFLAGS) -o sample_ns $(FORSAMPLE) sample_ns.o 
+
+deltat : $(FORDELTAT) deltat.o 
+	$(FC) $(FFLAGS) -o deltat $(FORDELTAT) deltat.o 
 
 .PHONY : clean
 clean :
