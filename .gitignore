@@ -3,7 +3,8 @@ reion
 CVS
 scratch 
 data
-plots
+set*
+plots/set*
 result 
 *.out
 *~
