@@ -1,0 +1,5 @@
+set70: run with dz=0.1 
+set71: run with dz=0.1 (diff. Pop3 IMF)
+set72: run with dz=0.1 (diff. Pop3 IMF)
+set73: changed fstar_pop3, lag is zero (just a check run) 
+
