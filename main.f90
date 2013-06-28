@@ -47,7 +47,8 @@ PROGRAM REION
        &ejrate_n, ejrate_si, ejrate_mg, ejrate_zn, foo, decr, mcoolgas,&
        &sdt, sdl, HaloVirialTemp, GasCoolingRate, eta, p, hb, fb, ft,&
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
-       &temp_sd93, lambda_sd93, t_test, fe_test, l_test 
+       &temp_sd93, lambda_sd93, t_test, fe_test, l_test, FirstStar_redshift, &
+       &FirstStar_time, Zcr_redshift, Zcr_time   
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -61,7 +62,7 @@ PROGRAM REION
 
   CHARACTER(100) :: ZLUMARG, RGNOVDARG, FESCARG, RGNSIZEARG, yfooarg 
 
-  LOGICAL :: PREOVERLAP, limnotset_h, limnotset_c 
+  LOGICAL :: PREOVERLAP, limnotset_h, limnotset_c
 
   ! ----------------------------------------
 
@@ -244,6 +245,10 @@ PROGRAM REION
   open(unit=78, file='avghalos_sfrcontrib.out', status='unknown', action='write') 
   open(unit=77, file='halos_mstardot.out', status='unknown', action='write') 
   open(unit=79, file='avghalos_mstardot.out', status='unknown', action='write') 
+  open(unit=81, file='halos_Zcrtimehot.out', status='unknown', action='write') 
+  open(unit=82, file='halos_Zcrtimecold.out', status='unknown', action='write') 
+  open(unit=83, file='halos_Firststartimehot.out', status='unknown', action='write') 
+  open(unit=84, file='halos_Firststartimecold.out', status='unknown', action='write') 
 
   open(unit=69, file='aux_fe.out', status='unknown', action='write') 
   open(unit=70, file='aux_o.out', status='unknown', action='write') 
@@ -279,6 +284,9 @@ PROGRAM REION
   allocate(ismz_halosc(n_halocalc)) 
   allocate(aux_halosc(n_halocalc)) 
   allocate(sfrcontrib_halosc(n_halocalc)) 
+  allocate(NotEnrichedYet_cold(n_halocalc))
+  allocate(FirstStar_timec(n_halocalc))
+  allocate(Zcr_timec(n_halocalc)) 
 
   allocate(m_halosh(n_halocalc))
   allocate(mstar_halosh(n_halocalc))
@@ -304,6 +312,11 @@ PROGRAM REION
   allocate(halol1500c(n_halocalc))
   allocate(halol1500h(n_halocalc))
   allocate(sfrcontrib_halosh(n_halocalc)) 
+  allocate(NotEnrichedYet_hot(n_halocalc))
+  allocate(FirstStar_timeh(n_halocalc))
+  allocate(Zcr_timeh(n_halocalc)) 
+
+  allocate(tdyn_array(n_halocalc)) 
 
   febyh_halosc = -10.0_prec
   febyh_halosh = -10.0_prec
@@ -332,6 +345,12 @@ PROGRAM REION
      ismz_halosc(i) = 0.0_prec; ismz_halosh(i) = 0.0_prec 
      nofmc(i) = 0.0_prec; nofmh(i) = 0.0_prec 
      sfrcontrib_halosc(i) = 0.0_prec; sfrcontrib_halosh(i) = 0.0_prec 
+
+     NotEnrichedYet_cold(i) = .true.; NotEnrichedYet_hot(i) = .true. 
+     FirstStar_timec(i) = 0.0_prec; FirstStar_timeh(i) = 0.0_prec 
+     Zcr_timec(i) = 0.0_prec; Zcr_timeh(i) = 0.0_prec
+
+     tdyn_array(i) = 0.0_prec 
 
      t_zn(i) = 0.0_prec 
      t_si(i) = 0.0_prec 
@@ -362,6 +381,7 @@ PROGRAM REION
   write (58,*) 'data_mmax=', data_mmax 
   write (58,*) 'stmass_uplimit=', stmass_uplimit 
   write (58,*) 'eta=', eta
+  write (58,*) 'Enrich_time_lag=', Enrich_time_lag
 
   do 
      countr = countr + 1 
@@ -473,7 +493,8 @@ PROGRAM REION
      sfrarr(countr-1) = source*1.0e10_prec ! M_solar yr^-1 Mpc^-3
      sfrarr_pop2(countr-1) = source_pop2*1.0e10_prec ! M_solar yr^-1 Mpc^-3
      sfrarr_pop3(countr-1) = source_pop3*1.0e10_prec ! M_solar yr^-1 Mpc^-3
-     write (34, '(F4.1,4E11.3E2)') z, sfrarr(countr-1), sfrarr_pop2(countr-1), sfrarr_pop3(countr-1), limsfr 
+     write (34, '(F4.1,4E11.3E2)') z, sfrarr(countr-1), sfrarr_pop2(countr-1), &
+          &sfrarr_pop3(countr-1), limsfr 
      nphdot = fesc*(source_pop2*ngamma_pop2 + source_pop3*ngamma_pop3) ! yr^-1 Mpc^-3
 
      !-------------------------
@@ -732,7 +753,8 @@ PROGRAM REION
      write (31, '(F4.1,5E11.3E2)') z, metarr(countr), fe_abundance, c_abundance, o_abundance, dtrans
      write (32, '(F4.1,8E11.3E2)') z, fb_struct, m_igm, m_str, m_ism, m_c, m_o, m_fe, m_totz 
      write (33, '(F4.1,3E11.3E2)') z, acc, ofl, ejc
-     write (35, '(F4.1,8E11.3E2)') z, xigm_fe, xigm_c, xigm_o, xigm_tot, xism_fe, xism_c, xism_o, xism_tot  
+     write (35, '(F4.1,8E11.3E2)') z, xigm_fe, xigm_c, xigm_o, xigm_tot, xism_fe, &
+          &xism_c, xism_o, xism_tot  
      write (36, '(F4.1,4E11.3E2)') z, ejc, ejrate_fe, ejrate_o, ejrate_c 
 
      !-----------------------------
@@ -750,6 +772,12 @@ PROGRAM REION
         else 
            strpop_halosc(i) = 2 
            halopop_cold(countr-1, i) = 2 
+           if (NotEnrichedYet_cold(i)) then 
+              Zcr_redshift = z 
+              call interpolate2(tarr, zarr, Zcr_redshift, Zcr_time) ! yr 
+              Zcr_timec(i) = Zcr_time 
+              NotEnrichedYet_cold(i) = .false. 
+           end if
         end if
 
         mdot = MassAccretionRate(z, m_halosc(i)*1.0e10_prec) ! 10^10 M_solar yr^-1
@@ -792,7 +820,7 @@ PROGRAM REION
              ((Omega_nr/Omega_mz)*(Delta_c/(18.0_prec*pi*pi)))**(1.0_prec/3.0_prec)*&
              ((1.0_prec+z)/10.0_prec) ! K 
 
-!!$        call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
+!!$     call interpolate2(sd93_coolrate, sd93_tvir, HaloVirialTemp, GasCoolingRate) ! J m^3 s^-1
         call bi_interpolate2(sd93_temp, sd93_febyh, sd93_lambda, HaloVirialTemp, &
              &febyh_halosc(i), GasCoolingRate) ! J m^3 s^-1
         GasCoolingRate = abs(GasCoolingRate)
@@ -800,7 +828,8 @@ PROGRAM REION
         p = (3.0_prec-eta)/eta
         hb = hubp(z) / yrbys ! s^-1
         fb = mgas_halosc(i)/m_halosc(i) 
-        ft = 3.0_prec*mproton*kboltz*HaloVirialTemp/(2.0_prec*mu_MeanMolWt*GasCoolingRate) ! s (kg/m^3) 
+        ft = 3.0_prec*mproton*kboltz*HaloVirialTemp/(2.0_prec*mu_MeanMolWt*&
+             &GasCoolingRate) ! s (kg/m^3) 
         mcooldot = p*mgas_halosc(i)*(((3.0_prec-eta)*fb/(4.0_prec*pi*newtg*ft))**p)*&
              ((10.0_prec*hb)**(3.0_prec/eta)) ! 10^10_Msolar s^-1 
         mcooldot = mcooldot * yrbys ! 10^10_Msolar yr^-1 
@@ -811,12 +840,21 @@ PROGRAM REION
         ! et al. 2010, Ap. J. 718, 1001-1018, Eqn. 8.
         tdyn = 2.0e7_prec * (DiscScaleLength/4.0_prec) * (200.0_prec/HaloCircularVelocity) ! yr
 
+        ! tdyn = timedyn(z) ! yr 
+
         if (strpop_halosc(i) == 3) then 
            mstardot_insitu = fstar_pop3 * mcoolgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
         else 
            mstardot_insitu = fstar * mcoolgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
         end if
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
+
+        if (sfrarr_halocalc_cold(countr-2,i) .eq. 0.0_prec) then 
+           FirstStar_redshift = z 
+           call interpolate2(tarr, zarr, FirstStar_redshift, FirstStar_time) ! yr 
+           FirstStar_timec(i) = FirstStar_time 
+        end if
+
         return_fraction = ejfrac_nonira(z,1,i)
         mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
         mstardot_halosc(i) = mstardot ! 10^10 M_solar yr^-1
@@ -917,6 +955,12 @@ PROGRAM REION
         else 
            strpop_halosh(i) = 2 
            halopop_hot(countr-1, i) = 2
+           if (NotEnrichedYet_hot(i)) then 
+              Zcr_redshift = z 
+              call interpolate2(tarr, zarr, Zcr_redshift, Zcr_time) ! yr 
+              Zcr_timeh(i) = Zcr_time 
+              NotEnrichedYet_hot(i) = .false. 
+           end if
         end if
 
         mdot = MassAccretionRate(z, m_halosh(i)*1.0e10_prec) ! 10^10 M_solar yr^-1
@@ -978,12 +1022,20 @@ PROGRAM REION
         ! et al. 2010, Ap. J. 718, 1001-1018, Eqn. 8.
         tdyn = 2.0e7_prec * (DiscScaleLength/4.0_prec) * (200.0_prec/HaloCircularVelocity) ! yr
 
+        ! tdyn = timedyn(z) ! yr 
+
         if (strpop_halosh(i) == 3) then 
            mstardot_insitu = fstar_pop3 * mcoolgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
         else 
            mstardot_insitu = fstar * mcoolgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
         end if
         sfrarr_halocalc_hot(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
+
+        if (sfrarr_halocalc_hot(countr-2,i) .eq. 0.0_prec) then 
+           FirstStar_redshift = z 
+           call interpolate2(tarr, zarr, FirstStar_redshift, FirstStar_time) ! yr 
+           FirstStar_timeh(i) = FirstStar_time 
+        end if
 
         return_fraction = ejfrac_nonira(z, 2, i) ! 10^10 M_solar yr^-1 
         mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
@@ -1124,7 +1176,12 @@ PROGRAM REION
      write (65,'(F4.1,270E11.3E2)') z, nofmc
      write (66,'(F4.1,270E11.3E2)') z, nofmh
 
-     write (73, '(F4.1,270E11.3E2)') z, halol1500h
+     write (73, '(F4.1,270E11.3E2)') z, halol1500c
+
+     write (81, '(F4.1,270E11.3E2)') z, Zcr_timeh
+     write (82, '(F4.1,270E11.3E2)') z, Zcr_timec
+     write (83, '(F4.1,270E11.3E2)') z, FirstStar_timeh
+     write (84, '(F4.1,270E11.3E2)') z, FirstStar_timec
 
   END DO
 
@@ -1174,6 +1231,11 @@ PROGRAM REION
   close(78)
   close(79)
   close(80)
+
+  close(81)
+  close(82)
+  close(83)
+  close(84)
 
   close(69)
   close(70)

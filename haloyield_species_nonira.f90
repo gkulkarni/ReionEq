@@ -27,6 +27,7 @@ function haloyield_species_nonira(z, species, hotcold, bin)
   ! Mg: species=10
 
   call interpolate2(tarr, zarr, z, t) ! [t] = yr 
+  t = t - Enrich_time_lag ! yr 
   tmyr = t*1.0e-6_prec ! Myr 
   call interpolate2(stellar_mass, stellar_age, tmyr, m_d) ! [md] = M_solar
   m_up = STMASS_UPLIMIT ! M_solar 
