@@ -48,7 +48,7 @@ PROGRAM REION
        &sdt, sdl, HaloVirialTemp, GasCoolingRate, eta, p, hb, fb, ft,&
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
        &temp_sd93, lambda_sd93, t_test, fe_test, l_test, FirstStar_redshift, &
-       &FirstStar_time, Zcr_redshift, Zcr_time   
+       &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3   
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -657,9 +657,13 @@ PROGRAM REION
      gammapi = (gpi_pop2*source_pop2 + gpi_pop3*source_pop3)*fesc*lmfp*&
           &(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
 
+     gammapi_pop2 = gpi_pop2*source_pop2*fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
+     gammapi_pop3 = gpi_pop3*source_pop3*fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
+     
+
      !-------------------------
 
-     write (38,'(F4.1,14E11.3E2)') z, q, tau, gammapi, temph, tempc, &
+     write (38,'(F4.1,16E11.3E2)') z, q, tau, gammapi, gammapi_pop2, gammapi_pop3, temph, tempc, &
           &(q*temph+(1.0_prec-q)*tempc), x_ii, dnlldz, lmfp, r, igmdcrit, nphdot, &
           &temphva, fv
 
