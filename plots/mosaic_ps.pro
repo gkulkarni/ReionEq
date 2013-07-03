@@ -49,6 +49,7 @@ gas = gas_data.field001[100,*]
 Zmetal = fltarr(100)
 for i = 0, 99 do begin 
    Zmetal[i] = (metal[0,i]/gas[0,i])/0.02
+   print, z[i], Zmetal[i], metal[0,i], gas[0,i] 
 endfor 
 Zmetal = alog10(Zmetal) 
 tick = replicate(' ',3)
@@ -58,8 +59,8 @@ plot, z, Zmetal, /xlog, xrange=[1,50], ytitle='log!D10!N(Z/Z!D!9n!X!N)', $
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, z, Zmetal, color=5 
 
-; legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=10!E9!N Myr'], charsize=1.1, box=0
-legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=0'], charsize=1.1, box=0
+legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=10!E9!N Myr'], charsize=1.1, box=0
+; legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=0'], charsize=1.1, box=0
 legend, ['(a2)'], /right, charsize=1.1, box=0 
 
 metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
@@ -89,25 +90,41 @@ xyouts, 2.0, -3.8, 'Z!Dcrit!N', charsize=1.5, alignment=0.5
 
 ; Plot GPI 
 
-restore, 'reionfiletemplate.sav'
-reiondata = read_ascii(set_lowmass + '/reion.out', template=reionfiletemplate)
-redshift = reiondata.z
+restore, 'reionfiletemplate_splitgpi.sav'
+reiondata = read_ascii(set_lowmass + '/reion.out', template=reionfiletemplate_splitgpi)
+redshift = reiondata.field01
 gpi = reiondata.field04
+gpi2 = reiondata.field05
+gpi3 = reiondata.field06
 gpi = gpi * 1.0e12 
-tick = replicate(' ',3)
-plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e3], xstyle=1, xtitle='!6redshift', $
-      ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', ytickformat='exp2',$
-      /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], xtickname=tick
-axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
-gpi1 = gpi 
-redshift1 = redshift 
-reiondata = read_ascii(set_highmass + '/reion.out', template=reionfiletemplate)
-redshift = reiondata.z
-gpi2 = reiondata.field04
 gpi2 = gpi2 * 1.0e12 
-oplot, redshift, gpi2, linestyle=5, color=2
-oplot, redshift1, gpi1 
-ratio = gpi/gpi2
+gpi3 = gpi3 * 1.0e12 
+gpi3 = smooth(gpi3, 3) 
+
+ratio1 = gpi3/gpi
+
+tick = replicate(' ',3)
+plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e6], xstyle=1, xtitle='!6redshift', $
+      ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', ytickformat='exp2',$
+      /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], xtickname=tick, ystyle=1
+axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
+oplot, redshift, gpi3, linestyle=5 
+
+reiondata = read_ascii(set_highmass + '/reion.out', template=reionfiletemplate_splitgpi)
+redshift = reiondata.field01
+gpi = reiondata.field04
+gpi2 = reiondata.field05
+gpi3 = reiondata.field06
+gpi = gpi * 1.0e12 
+gpi2 = gpi2 * 1.0e12 
+gpi3 = gpi3 * 1.0e12 
+gpi3 = smooth(gpi3, 3) 
+
+ratio2 = gpi3/gpi 
+
+oplot, redshift, gpi, color=2
+oplot, redshift, gpi3, color=2, linestyle=5 
+
 plotsym, 0, 0.5, /FILL
 
 readcol, '../data/gammapi_mw.dat', x, y, dy1, dy2, /silent 
@@ -139,16 +156,21 @@ vline, 8.5, linestyle=2
 xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 al_legend, ['Faucher-Giguere 08', 'Meiksin and White 04', 'Bolton and Haehnelt 07', $
-         '1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0,0,0,5], psym=[8,8,8,0,0],$
-        color=[5,3,2,-1,2], /right, charsize=1.1, background_color=6
+            '1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', '100-260 M!D!9n!X!N (total)', $
+            '100-260 M!D!9n!X!N (pop. III)'], linestyle=[0,0,0,0,5,0,5], psym=[8,8,8,0,0,0,0], $
+           color=[5,3,2,-1,-1,2,2], /right, charsize=1.1, background_color=6
 legend, ['(b2)'], /bottom, charsize=1.1, box=0 
 
 tick = replicate(' ',3)
-plot, redshift, ratio, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
-      xstyle=1, xtickname=tick, ytitle='ratio'
+plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
+      xstyle=1, xtickname=tick, ytitle='ratio', ytickformat='Exponent', yrange=[1.0e-4,1.0]
+oplot, redshift, ratio2, color=2 
 vline, 8.5, linestyle=2
-xyouts, 6.5, 3.5, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
-legend, ['(b1)'], /right, charsize=1.1, box=0 
+xyouts, 6.5, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
+legend, ['(b1)'], charsize=1.1, box=0 
+al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
+        color=[-1,2], /bottom, charsize=1.1, background_color=6
+
 
 ; Plot 3: SFR 
 
