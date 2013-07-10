@@ -48,7 +48,8 @@ PROGRAM REION
        &sdt, sdl, HaloVirialTemp, GasCoolingRate, eta, p, hb, fb, ft,&
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
        &temp_sd93, lambda_sd93, t_test, fe_test, l_test, FirstStar_redshift, &
-       &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3   
+       &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3, &
+       &fesc_pop2, oldigmdcrit, oldlmfp  
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -82,6 +83,9 @@ PROGRAM REION
   READ(RGNSIZEARG, '(F10.5)') RGNSIZE
   READ(ZLUMARG, '(F10.5)') ZLUM
   READ(FESCARG, '(F10.5)') FESC
+
+  ! fesc_pop2 = 0.1
+  fesc_pop2 = fesc 
 
   ! ----------------------------------------
 
@@ -490,12 +494,16 @@ PROGRAM REION
      source = sm 
      source_pop2 = sm_pop2
      source_pop3 = sm_pop3
+
+     if (source_pop3 .ne. source_pop3) source_pop3 = 0.0_prec 
+     
      sfrarr(countr-1) = source*1.0e10_prec ! M_solar yr^-1 Mpc^-3
      sfrarr_pop2(countr-1) = source_pop2*1.0e10_prec ! M_solar yr^-1 Mpc^-3
      sfrarr_pop3(countr-1) = source_pop3*1.0e10_prec ! M_solar yr^-1 Mpc^-3
      write (34, '(F4.1,4E11.3E2)') z, sfrarr(countr-1), sfrarr_pop2(countr-1), &
           &sfrarr_pop3(countr-1), limsfr 
-     nphdot = fesc*(source_pop2*ngamma_pop2 + source_pop3*ngamma_pop3) ! yr^-1 Mpc^-3
+     ! nphdot = fesc*(source_pop2*ngamma_pop2 + source_pop3*ngamma_pop3) ! yr^-1 Mpc^-3
+     nphdot = fesc_pop2*source_pop2*ngamma_pop2 + fesc*source_pop3*ngamma_pop3 ! yr^-1 Mpc^-3
 
      !-------------------------
 
@@ -521,8 +529,10 @@ PROGRAM REION
 
      ! Update ionized hydrogen fraction (x_ii) in ionized region. 
      gamma_rec = r*nh_proper*alpha_r*cmbympccb*yrbys ! yr^-1 
-     gamma_ion = (gpi_pop2*source_pop2+gpi_pop3*source_pop3)*&
-          &fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/q ! yr^-1 
+!!$     gamma_ion = (gpi_pop2*source_pop2+gpi_pop3*source_pop3)*&
+!!$          &fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/q ! yr^-1 
+     gamma_ion = (fesc_pop2*gpi_pop2*source_pop2+fesc*gpi_pop3*source_pop3)*&
+          &lmfp*(1.0_prec+z)**3*(cmbympc**2)/q ! yr^-1 
 
      a = gamma_rec*dz*dtdz(z)
      b = 1.0_prec + dz*dtdz(z)*gamma_ion
@@ -561,8 +571,11 @@ PROGRAM REION
           &(2.726*(1.0_prec+z)-temph)*nhii*erg2j*yrbys*cmbympccb ! J Mpc^-3 yr^-1 
 
      nhi = nh*(1.0_prec-oldxii) 
-     gammaph = (gph_pop2*source_pop2+gph_pop3*source_pop3)*fesc*&
+!!$     gammaph = (gph_pop2*source_pop2+gph_pop3*source_pop3)*fesc*&
+!!$          &lmfp*(1.0_prec+z)**3*(cmbympc**2)  ! J/yr 
+     gammaph = (fesc_pop2*gph_pop2*source_pop2+fesc*gph_pop3*source_pop3)*&
           &lmfp*(1.0_prec+z)**3*(cmbympc**2)  ! J/yr 
+
      gamma_heat = gammaph*nhi*(1.0_prec+z)**3/q ! J mpc^-3 yr^-1 
 
      heatcool = 2.0_prec*(gamma_heat-gamma_totc)/&
@@ -621,11 +634,16 @@ PROGRAM REION
         solfm_z = z 
         solfm_igmdcrit = igmdcrit 
         solfm_ff = q 
-        fmlo = f_m 
+        ! fmlo = f_m 
+        fmlo = 0.0
         fmhi = 0.99999999999_prec 
         tolzin = 1.0e-15_prec 
         oldigmfrac = f_m
         f_m = rtbis(solfm, fmlo, fmhi, tolzin, 'main-fm') 
+
+        if (f_m < oldigmfrac) f_m = oldigmfrac 
+
+        if (f_m .ne. f_m) f_m = oldigmfrac 
 
         q = 1.0_prec 
         ffarr(countr) = q 
@@ -634,12 +652,19 @@ PROGRAM REION
         dlthi = 1.0e6_prec !igmdcrit+1.0e30_prec
         dltlo = 0.0_prec !igmdcrit-59.0_prec
         tolzin = 1.0e-8_prec
+        oldigmdcrit = igmdcrit 
         dlt = rtbis(soldlt, dltlo, dlthi, tolzin, 'main-dlt')
         igmdcrit = dlt 
 
+        if (dlt < oldigmdcrit) dlt = oldigmdcrit 
+
+        if (dlt .ne. dlt) dlt = oldigmdcrit 
+
         r = clumpfac(igmdcrit)
         fv = igmvfrac(igmdcrit) 
+        oldlmfp = lmfp 
         lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-fv)**(2.0_prec/3.0_prec)) ! mpc 
+        if (lmfp .ne. lmfp) lmfp = oldlmfp 
      end if
 
      !-------------------------
@@ -654,10 +679,13 @@ PROGRAM REION
 
      dnlldz = speed_of_light*cmbympc*yrbys/&
           &(sqrt(pi)*lmfp*hubp(z)*(1.0_prec+z)) ! dimensionless 
-     gammapi = (gpi_pop2*source_pop2 + gpi_pop3*source_pop3)*fesc*lmfp*&
+!!$     gammapi = (gpi_pop2*source_pop2 + gpi_pop3*source_pop3)*fesc*lmfp*&
+!!$          &(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
+
+     gammapi = (fesc_pop2*gpi_pop2*source_pop2 + fesc*gpi_pop3*source_pop3)*lmfp*&
           &(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
 
-     gammapi_pop2 = gpi_pop2*source_pop2*fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
+     gammapi_pop2 = gpi_pop2*source_pop2*fesc_pop2*lmfp*(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
      gammapi_pop3 = gpi_pop3*source_pop3*fesc*lmfp*(1.0_prec+z)**3*(cmbympc**2)/yrbys ! s^-1
      
 
@@ -1082,13 +1110,14 @@ PROGRAM REION
            mCdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_c - &
                 &fout*mC_halosh(i)/mgas_halosh(i)  &
                 &+ haloyield_species_nonira(z,7,2,i)*(1.0_prec-zeta)
-           mC_halosh(i) = mC_halosh(i) + dz*dtdz(z)*mCdot   
+           mC_halosh(i) = mC_halosh(i) + dz*dtdz(z)*mCdot 
            mFedot = fgas_in*(omega_b/omega_nr)*mdot*xigm_fe - &
                 &fout*mFe_halosh(i)/mgas_halosh(i)  &
                 &+ haloyield_species_nonira(z,14,2,i)*(1.0_prec-zeta)
-           mFe_halosh(i) = mFe_halosh(i) + dz*dtdz(z)*mFedot 
 
-           aux_halosh(i) = 1.0_prec-zeta 
+           aux_halosh(i) = fout*mFe_halosh(i)/mgas_halosh(i) 
+           
+           mFe_halosh(i) = mFe_halosh(i) + dz*dtdz(z)*mFedot 
 
            mOdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_o - &
                 &fout*mO_halosh(i)/mgas_halosh(i)  &
@@ -1161,7 +1190,7 @@ PROGRAM REION
      write (79,'(F4.1,270E11.3E2)') z, q*mstardot_halosh + (1.0_prec-q)*sfrcontrib_halosc 
      write (80,'(F4.1,270E11.3E2)') z, sfrcontrib_halosc 
 
-     write (49,'(F4.1,270E11.3E2)') z, mstardot_halosc
+     write (49,'(F4.1,270E11.3E2)') z, aux_halosh 
 
      write (50,'(F4.1,270E11.3E2)') z, q*m_halosh + (1.0_prec-q)*m_halosc 
      write (51,'(F4.1,270E11.3E2)') z, q*mstar_halosh + (1.0_prec-q)*mstar_halosc 
