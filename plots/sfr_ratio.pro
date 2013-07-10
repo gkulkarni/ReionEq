@@ -43,9 +43,9 @@ sfr_pop3[84]=1.0e-15
 oplot, z, sfr_pop3, linestyle=5
 pop3_frac1 = sfr_pop3/sfr_tot
 
-sfrdata = read_ascii('set7/sfr.out', template=sfrfiletemplate)
+sfrdata = read_ascii('set68/sfr.out', template=sfrfiletemplate)
 sfr_tot2 = sfrdata.total_sfr
-oplot, z, sfr_tot2, color=2
+;oplot, z, sfr_tot2, color=2
 oplot, z, sfr_tot
 z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
