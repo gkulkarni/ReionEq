@@ -19,7 +19,8 @@ TvLCT, 0, 127, 255, 3
 !P.charthick = 1
 
 erase
-multiplot, [1,2], mXtitle='!6z', mXtitsize='1.5', mytitsize='1.5', mYtitoffset=1.5, xtickformat='(I1)', mXtitoffset=1.5, /doyaxis
+multiplot, [1,2], mXtitle='!6z', mXtitsize='1.5', mytitsize='1.5', $
+           mYtitoffset=1.5, xtickformat='(I1)', mXtitoffset=1.5, /doyaxis
 @avg
 plotsym, 0, 0.7, /FILL
 readcol, '../data/abr_cooke_cbyfe.dat', z, c, cl, cu 
