@@ -2,4 +2,67 @@ set70: run with dz=0.1
 set71: run with dz=0.1 (diff. Pop3 IMF)
 set72: run with dz=0.1 (diff. Pop3 IMF)
 set73: changed fstar_pop3, lag is zero (just a check run) 
+set74: run in which cooling rate look-up assumes Z=0 (I reverted to git version c925b6f9a for this.) 
+set75: run as set73 but with fesc=0.1 IMF 1-100
+set76: IMF is 100-260 
+set77: same as set75 but fesc = 0.16 
+set78: same as set76 but fesc = 0.16 
+set79: t_lag = 10^8 yr; IMF is 100-260 
+set80: t_lag = 10^8 yr; IMF is 1-100
+set81: 1-100; t_lag = 10^9  
+set82: 100-260; t_lag = 10^9 
+set83: 100-260; t_lag = 10^9 (fesc = 0.05) 
+
+set91: 100-260; t_lag = 0 
+set92: 1-100; t_lag = 0 
+
+set93: 1-100; t_lag = 10^8 
+set94: 100-260; t_lag = 10^8 
+
+set95: 100-260; t_lag = 10^9 
+set96: 1-100; t_lag = 10^9 
+
+
+------
+
+set60: 1-100, lag=0
+set66: 100-260, lag=0  
+       
+set63: 1-100, lag=10^9
+set68: 100-260, lag=10^9 
+
+set59: 1-100, lag=10^8
+set67: 100-260, lag=10^8 
+
+------
+
+set97: 100-260; t_lag = 10^9 (fesc = 0.01) 
+set98: 100-260; t_lag = 10^9 (fesc = 0.001) 
+
+set99: 100-260; t_lag = 10^9 (fesc = 0.02) 
+set100: 100-260; t_lag = 10^9 (fesc = 0.04) 
+set101: 100-260; t_lag = 10^9 (fesc = 0.03) 
+
+------
+
+set102: 100-260; t_lag = 10^9 (fesc = 0.1, fstar_pop3 = 0.0004) 
+set103: 100-260; t_lag = 10^9 (fesc = 0.1, fstar_pop3 = 0.00001) 
+set104: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.00001; fmlo = 0.0) 
+set105: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.004; fmlo = 0.0) 
+set106: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.004; fmlo = 0.0) fesc_pop2 = fesc*20.0 
+set107: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.004; fmlo = 0.0) fesc_pop2 = 0.1 
+
+set111: 100-260; t_lag = 10^9 (fesc = 0.01, fstar_pop3 = 0.004; fmlo = 0.0) fesc_pop2 = 0.1 
+set112: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.002; fmlo = 0.0) fesc_pop2 = 0.03 
+set114: 100-260; t_lag = 10^9 (fesc = 0.03, fstar_pop3 = 0.002; fmlo = 0.0) fesc_pop2 = 0.1
+
+set123: 1-100 10^9 
+set124: 1-100 10^8 
+set125: 1-100 0
+
+set126: 100-126 0 
+set127: 100-126 10^9
+set128: 100-126 10^8 
+
+
 
