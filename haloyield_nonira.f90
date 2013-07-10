@@ -19,6 +19,7 @@ function haloyield_nonira(z, hotcold, bin)
 
   call interpolate2(tarr, zarr, z, t) ! [t] = yr 
   t = t - Enrich_time_lag ! yr 
+  if (t < 0.0_prec) t = 0.0_prec 
   tmyr = t*1.0e-6_prec ! Myr 
   call interpolate2(stellar_mass, stellar_age, tmyr, m_d) ! [md] = M_solar
   m_up = STMASS_UPLIMIT ! M_solar 
@@ -54,13 +55,16 @@ contains
     real(kind=prec), intent(in) :: m 
     real(kind=prec) :: integrand
     real(kind=prec) :: mr, st_age, rs, psi2, psi, mej, zmet, &
-         &lzmet, st_ageyr, integrand2, integrand3
+         &lzmet, st_ageyr, integrand2, integrand3, tsfr 
     integer :: pop
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
 
     call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
-    st_ageyr = st_age*1.0e6_prec ! yr 
-    call interpolate2(zarr, tarr, t-st_ageyr, rs) 
+    st_ageyr = st_age*1.0e6_prec ! yr
+    ! Subtraction by Enrich_time_lag below is crucial!
+    tsfr = t-st_ageyr-Enrich_time_lag
+    if (tsfr < 0.0_prec) tsfr = 0.0_prec 
+    call interpolate2(zarr, tarr, tsfr, rs) 
     zmet = getmet(rs) 
 
     m_overflow = .false. 
