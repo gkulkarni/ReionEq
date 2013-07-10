@@ -49,18 +49,17 @@ gas = gas_data.field001[100,*]
 Zmetal = fltarr(100)
 for i = 0, 99 do begin 
    Zmetal[i] = (metal[0,i]/gas[0,i])/0.02
-   print, z[i], Zmetal[i], metal[0,i], gas[0,i] 
 endfor 
 Zmetal = alog10(Zmetal) 
 tick = replicate(' ',3)
 plot, z, Zmetal, /xlog, xrange=[1,50], ytitle='log!D10!N(Z/Z!D!9n!X!N)', $
-      xstyle=1, yrange=[-6.0,0.0], /nodata, position=[x1,0.1,x1+plotwidth,0.7], $
+      xstyle=1, yrange=[-6.0,1.0], /nodata, position=[x1,0.1,x1+plotwidth,0.7], $
       xtitle='redshift', ytickformat='metlabel', xtickname=tick
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, z, Zmetal, color=5 
 
-legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=10!E9!N Myr'], charsize=1.1, box=0
-; legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Denrich!N=0'], charsize=1.1, box=0
+legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Ddelay!N=10!E9!N yr'], charsize=1.1, box=0
+; legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Ddelay!N=0 yr'], charsize=1.1, box=0
 legend, ['(a2)'], /right, charsize=1.1, box=0 
 
 metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
@@ -99,16 +98,18 @@ gpi3 = reiondata.field06
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-gpi3 = smooth(gpi3, 3) 
+;gpi3 = smooth(gpi3, 3) 
 
 ratio1 = gpi3/gpi
 
 tick = replicate(' ',3)
-plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e6], xstyle=1, xtitle='!6redshift', $
-      ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', ytickformat='exp2',$
-      /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], xtickname=tick, ystyle=1
+plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e6], xstyle=1, $
+      xtitle='!6redshift', ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', $
+      ytickformat='exp2', /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], $
+      xtickname=tick, ystyle=1
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
-oplot, redshift, gpi3, linestyle=5 
+oplot, redshift, gpi 
+oplot, redshift, gpi3, linestyle=5, thick=6
 
 reiondata = read_ascii(set_highmass + '/reion.out', template=reionfiletemplate_splitgpi)
 redshift = reiondata.field01
@@ -118,12 +119,12 @@ gpi3 = reiondata.field06
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-gpi3 = smooth(gpi3, 3) 
+;gpi3 = smooth(gpi3, 3) 
 
 ratio2 = gpi3/gpi 
 
 oplot, redshift, gpi, color=2
-oplot, redshift, gpi3, color=2, linestyle=5 
+oplot, redshift, gpi3, color=2, linestyle=5, thick=6
 
 plotsym, 0, 0.5, /FILL
 
@@ -152,20 +153,20 @@ x[0] = 0.0
 oplot, x, y, psym=8, color=5
 oploterror, x, y, dy, errcolor=5, psym=3, /nohat 
 
-vline, 8.5, linestyle=2
+vline, 7.5, linestyle=2
 xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
-al_legend, ['Faucher-Giguere 08', 'Meiksin and White 04', 'Bolton and Haehnelt 07', $
-            '1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', '100-260 M!D!9n!X!N (total)', $
-            '100-260 M!D!9n!X!N (pop. III)'], linestyle=[0,0,0,0,5,0,5], psym=[8,8,8,0,0,0,0], $
-           color=[5,3,2,-1,-1,2,2], /right, charsize=1.1, background_color=6
+;; al_legend, ['Faucher-Giguere 08', 'Meiksin and White 04', 'Bolton and Haehnelt 07', $
+;;             '1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', '100-260 M!D!9n!X!N (total)', $
+;;             '100-260 M!D!9n!X!N (pop. III)'], linestyle=[0,0,0,0,5,0,5], psym=[8,8,8,0,0,0,0], $
+;;            color=[5,3,2,-1,-1,2,2], /right, charsize=1.1, background_color=6
 legend, ['(b2)'], /bottom, charsize=1.1, box=0 
 
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
-      xstyle=1, xtickname=tick, ytitle='ratio', ytickformat='Exponent', yrange=[1.0e-4,1.0]
+      xstyle=1, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
 oplot, redshift, ratio2, color=2 
-vline, 8.5, linestyle=2
+vline, 7.5, linestyle=2
 xyouts, 6.5, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 legend, ['(b1)'], charsize=1.1, box=0 
 al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
@@ -196,7 +197,7 @@ z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
 n = size(sfr_pop3, /n_elements)
-sfr_pop3[84]=1.0e-15
+;sfr_pop3[84]=1.0e-15
 oplot, z, sfr_pop3, linestyle=5
 pop3_frac1 = sfr_pop3/sfr_tot
 
@@ -207,11 +208,11 @@ oplot, z, sfr_tot
 z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
-sfr_pop3[84]=1.0e-15
+;sfr_pop3[84]=1.0e-15
 oplot, z, sfr_pop3, linestyle=5, color=2
 pop3_frac2 = sfr_pop3/sfr_tot2
 
-vline, 8.5, linestyle=2
+vline, 7.5, linestyle=2
 xyouts, 6.2, 1.0e-3, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 al_legend, ['Hopkins+Beacom 06','1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', $
@@ -225,7 +226,7 @@ plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=1, yrange=[1.0e-4,1.0],
       ytitle='ratio (popIII/total)'
 oplot, z, pop3_frac2, color=2
 
-vline, 8.5, linestyle=2
+vline, 7.5, linestyle=2
 xyouts, 6.2, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
