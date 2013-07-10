@@ -8,7 +8,7 @@
 ;; set_plot, 'ps'
 ;; device, filename='sh_obysi.ps', xsize=7.0, ysize=7.0, /inches, color=1, yoffset=1.0
 
-window, xsize=1000, ysize=1000
+window, xsize=700, ysize=700
 Device, decomposed=0
 TvLCT, 255, 0, 0, 2 
 TvLCT, 0, 127, 255, 3

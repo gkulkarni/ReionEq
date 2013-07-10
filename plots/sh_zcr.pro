@@ -9,7 +9,7 @@
 ;; set_plot, 'ps'
 ;; device, filename='sh_zcr.ps', xsize=7.0, ysize=7.0, /inches, color=1, yoffset=1.0
 
-window, xsize=1000, ysize=1000
+window, xsize=700, ysize=700
 Device, decomposed=0
 TvLCT, 255, 0, 0, 2 
 TvLCT, 0, 127, 255, 3
@@ -44,7 +44,7 @@ oplot, z, halos, color=2
 halos = alog10(halos_data.field001[140,*])+10.0
 oplot, z, halos, color=3
 
-halos = alog10(halos_data.field001[73,*])+10.0
+halos = alog10(halos_data.field001[100,*])+10.0
 oplot, z, halos
 
 ; xyouts, 30.0, 10.0, 'model 3', charsize=2.0, alignment=0.5
@@ -56,8 +56,8 @@ multiplot
 
 metal_data = read_ascii('set70/halos_metals.out', template=stars_template)
 gas_data =  read_ascii('set70/halos_gas.out', template=stars_template)
-metal = metal_data.field001[73,*]
-gas = gas_data.field001[73,*]
+metal = metal_data.field001[100,*]
+gas = gas_data.field001[100,*]
 help, metal
 Zmetal = fltarr(499)
 for i = 0, 498 do begin 
