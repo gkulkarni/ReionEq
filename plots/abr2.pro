@@ -46,11 +46,11 @@ PRO abr2, row, z
 
 ;----------------------------------------
 
-  c_data2 = read_ascii('set68/halos_c.out', template=stars_template)
-  fe_data2 = read_ascii('set68/halos_fe.out', template=stars_template)
-  m_data2 = read_ascii('set68/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set95/halos_c.out', template=stars_template)
+  fe_data2 = read_ascii('set95/halos_fe.out', template=stars_template)
+  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set68/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -184,7 +184,7 @@ PRO abr2, row, z
   print, 'ldla=', ldla 
 ; print, z, ldla
 ; return 
-; print, 'mean=', mean
+  print, 'mean [c/fe] chosen set=', mean
 
 ;  return 
 
@@ -233,7 +233,7 @@ PRO abr2, row, z
      endif else begin 
         febyh2[i] = alog10(abs(fe2[i]/mH2)) + 2.78 
      endelse
-     print, i, febyh2[i] 
+;     print, i, febyh2[i] 
 
      
      if (c2[i] eq 0.0) then begin 
@@ -325,7 +325,7 @@ PRO abr2, row, z
   mean = mean/ldla
 
   print, 'ldla=', ldla 
-  print, 'mean=', mean
+  print, 'mean[c/fe]=', mean
 
 
 ;----------------------------------------
@@ -487,7 +487,7 @@ PRO abr2, row, z
 
   mean = mean/ldla
   print, 'ldla=', ldla 
-  print, 'mean=', mean
+  print, 'mean[c/fe]=', mean
 
 ;; >>>>>1<<<<<
 
@@ -497,11 +497,11 @@ PRO abr2, row, z
 ; C = O 
 ; Fe = Si 
 
-  c_data2 = read_ascii('set68/halos_o.out', template=stars_template)
-  fe_data2 = read_ascii('set68/halos_Si.out', template=stars_template)
-  m_data2 = read_ascii('set68/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set95/halos_o.out', template=stars_template)
+  fe_data2 = read_ascii('set95/halos_Si.out', template=stars_template)
+  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set68/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -636,7 +636,7 @@ PRO abr2, row, z
   mean = mean/ldla
 
   print, 'ldla=', ldla 
-  print, 'mean=', mean
+  print, 'mean[o/si] chosen set=', mean
 
 ;--------------------------------------
 
@@ -773,7 +773,7 @@ PRO abr2, row, z
   mean = mean/ldla
 
   print, 'ldla=', ldla 
-  print, 'mean=', mean
+  print, 'mean[o/si]=', mean
 
 
 ;----------------------------------------
@@ -943,7 +943,7 @@ PRO abr2, row, z
 
   mean = mean/ldla
   print, 'ldla=', ldla 
-  print, 'mean=', mean
+  print, 'mean[o/si]=', mean
 
 ;; >>>>>2<<<<<
 
@@ -954,11 +954,11 @@ PRO abr2, row, z
 ; C = Zn 
 ; Fe = Fe
 
-  c_data2 = read_ascii('set68/halos_Zn.out', template=stars_template)
-  fe_data2 = read_ascii('set68/halos_fe.out', template=stars_template)
-  m_data2 = read_ascii('set68/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set95/halos_Zn.out', template=stars_template)
+  fe_data2 = read_ascii('set95/halos_fe.out', template=stars_template)
+  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set68/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -1407,11 +1407,11 @@ PRO abr2, row, z
 ; C = N
 ; Fe = O
 
-  c_data2 = read_ascii('set68/halos_N.out', template=stars_template)
-  fe_data2 = read_ascii('set68/halos_o.out', template=stars_template)
-  m_data2 = read_ascii('set68/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set95/halos_N.out', template=stars_template)
+  fe_data2 = read_ascii('set95/halos_o.out', template=stars_template)
+  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set68/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
