@@ -38,8 +38,6 @@ function ejrate(z, species)
   end if
 
   call interpolate2(tarr, zarr, z, t) ! [t] = yr 
-  t = t - Enrich_time_lag ! yr 
-  if (t < 0.0_prec) t = 0.0_prec 
   tmyr = t*1.0e-6_prec ! Myr 
   call interpolate2(stellar_mass, stellar_age, tmyr, m_d) ! [md] = M_solar
   m_up = STMASS_UPLIMIT ! M_solar 
@@ -88,9 +86,10 @@ contains
     if (all_species) then 
 
        integrand = 0.0_prec 
-       tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
+       tsfr = t - Enrich_time_lag 
+       if (tsfr < 0.0_prec) t = 0.0_prec 
        do 
-          if (tsfr < 0.0) exit  
+          if (tsfr > t) exit  
 
           call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
           st_ageyr = st_age*1.0e6_prec ! yr 
@@ -168,10 +167,10 @@ contains
     else 
 
        integrand = 0.0_prec 
-       tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
-              
+       tsfr = t - Enrich_time_lag 
+       if (tsfr < 0.0_prec) t = 0.0_prec 
        do 
-          if (tsfr < 0.0) exit  
+          if (tsfr > t) exit  
 
           call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
           st_ageyr = st_age*1.0e6_prec ! yr 
