@@ -88,7 +88,7 @@ contains
     if (all_species) then 
 
        integrand = 0.0_prec 
-       tsfr = t - Enrich_time_lag 
+       tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
        do 
           if (tsfr < 0.0) exit  
 
@@ -165,7 +165,8 @@ contains
     else 
 
        integrand = 0.0_prec 
-       tsfr = t - Enrich_time_lag 
+       tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
+              
        do 
           if (tsfr < 0.0) exit  
 

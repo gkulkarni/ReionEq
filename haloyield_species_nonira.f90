@@ -68,7 +68,7 @@ contains
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
 
     integrand = 0.0_prec 
-    tsfr = t - Enrich_time_lag 
+    tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
     do 
        if (tsfr < 0.0) exit  
 
