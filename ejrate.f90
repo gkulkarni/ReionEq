@@ -260,8 +260,8 @@ contains
        ! This slope is determined from the condition that all mass should
        ! be ejected between time 0 and Enrich_time_lag, i.e., the
        ! integral of frac_ej(t)dt should be unity over this interval.
-       slope = 2.0_prec / Enrich_time_lag**2 ! yr^-2
-       frac_ej = slope * t ! yr^-1 
+       slope = 1.0_prec / Enrich_time_lag ! yr^-1
+       frac_ej = slope ! yr^-1 
     end if
 
   end function frac_ej
