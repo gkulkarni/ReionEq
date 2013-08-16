@@ -82,7 +82,7 @@ contains
     real(kind=prec), intent(in) :: m 
     real(kind=prec) :: integrand
     real(kind=prec) :: mr, st_age, rs, psi2, psi3, mej, zmet, &
-         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt 
+         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt, rs_sf  
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
 
     if (all_species) then 
@@ -92,10 +92,13 @@ contains
        do 
           if (tsfr < 0.0) exit  
 
-          ! Calculate mej 
-
+          call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
+          st_ageyr = st_age*1.0e6_prec ! yr 
+          call interpolate2(zarr, tarr, t-st_ageyr, rs_sf) 
+          zmet = getmet(rs_sf) 
           call interpolate2(zarr, tarr, tsfr, rs) 
-          zmet = getmet(rs) 
+          
+          ! Calculate mej 
 
           m_overflow = .false. 
           m_underflow = .false. 
@@ -149,10 +152,10 @@ contains
           dt = dtdz(rs)*dz ! yr 
           frac = frac_ej(t-tsfr) * dt ! dimensionless 
 
-          psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
+          psi2 = getsfr2(rs_sf) ! M_solar yr^-1 Mpc^-3
           integrand2 = imf(m)*(m-mr)*psi2*frac ! yr^-1 Mpc^-3 
 
-          psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
+          psi3 = getsfr3(rs_sf) ! M_solar yr^-1 Mpc^-3
           integrand3 = imf_pop3(m)*(m-mr)*psi3*frac ! yr^-1 Mpc^-3 
 
           if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 
@@ -170,10 +173,14 @@ contains
        do 
           if (tsfr < 0.0) exit  
 
-          ! Calculate mej 
-
+          call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
+          st_ageyr = st_age*1.0e6_prec ! yr 
+          call interpolate2(zarr, tarr, t-st_ageyr, rs_sf) 
+          zmet = getmet(rs_sf) 
           call interpolate2(zarr, tarr, tsfr, rs) 
-          zmet = getmet(rs) 
+
+
+          ! Calculate mej 
 
           m_overflow = .false. 
           m_underflow = .false. 
@@ -227,10 +234,10 @@ contains
           dt = dtdz(rs)*dz ! yr 
           frac = frac_ej(t-tsfr) * dt ! dimensionless 
 
-          psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
+          psi2 = getsfr2(rs_sf) ! M_solar yr^-1 Mpc^-3
           integrand2 = imf(m)*mej*psi2 ! yr^-1 Mpc^-3 
 
-          psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
+          psi3 = getsfr3(rs_sf) ! M_solar yr^-1 Mpc^-3
           integrand3 = imf_pop3(m)*mej*psi3 ! yr^-1 Mpc^-3 
 
           if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 

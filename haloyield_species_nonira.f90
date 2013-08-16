@@ -63,20 +63,24 @@ contains
     real(kind=prec), intent(in) :: m 
     real(kind=prec) :: integrand
     real(kind=prec) :: mr, st_age, rs, psi2, psi, mej, zmet, &
-         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt
+         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt, rs_sf 
     integer :: pop 
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
+
+    
 
     integrand = 0.0_prec 
     tsfr = t ! Note that Enrich_time_lag has already been subtracted in the caller routine. 
     do 
        if (tsfr < 0.0) exit  
 
-       ! Calculate mej 
-
+       call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
+       st_ageyr = st_age*1.0e6_prec ! yr 
+       call interpolate2(zarr, tarr, t-st_ageyr, rs_sf) 
+       zmet = getmet(rs_sf) 
        call interpolate2(zarr, tarr, tsfr, rs) 
-       zmet = getmet(rs) 
 
+       ! Calculate mej 
        m_overflow = .false. 
        m_underflow = .false. 
        if (m > data_mmax) then 
@@ -132,8 +136,8 @@ contains
        
        if (hotcold == 1) then 
           ! cold
-          pop = getpop_cold(rs, bin)
-          psi = getsfr_cold(rs, bin)  
+          pop = getpop_cold(rs_sf, bin)
+          psi = getsfr_cold(rs_sf, bin)  
           if (pop == 2) then 
              contribution = imf(m) * psi * mej * frac
              if (m > POP2_UPLIMIT) contribution = 0.0_prec 
@@ -142,8 +146,8 @@ contains
           end if
        else 
           ! hot 
-          pop = getpop_hot(rs, bin)
-          psi = getsfr_hot(rs, bin) 
+          pop = getpop_hot(rs_sf, bin)
+          psi = getsfr_hot(rs_sf, bin) 
           if (pop == 2) then 
              contribution = imf(m) * psi * mej * frac ! M_solar / yr 
              if (m > POP2_UPLIMIT) contribution = 0.0_prec 
