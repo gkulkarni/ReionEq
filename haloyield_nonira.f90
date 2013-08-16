@@ -7,7 +7,7 @@ function haloyield_nonira(z, hotcold, bin)
   use constants 
   use storage 
   use interfaces, only : getsfr, imf, imf_pop3, interpolate2, bi_interpolate2, &
-       &getmet, sfr_rollinde_pop3, sfr_rollinde_pop2, getsfr_hot, getsfr_cold, getpop_hot, getpop_cold
+       &getmet, sfr_rollinde_pop3, sfr_rollinde_pop2, getsfr_hot, getsfr_cold, getpop_hot, getpop_cold, dtdz 
   implicit none 
   real(kind=prec), intent(in) :: z 
   integer, intent(in) :: hotcold, bin  
@@ -55,9 +55,10 @@ contains
     real(kind=prec), intent(in) :: m 
     real(kind=prec) :: integrand
     real(kind=prec) :: mr, st_age, rs, psi2, psi, mej, zmet, &
-         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution 
+         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt 
     integer :: pop
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
+
 
     integrand = 0.0_prec 
     tsfr = t - Enrich_time_lag 
