@@ -84,8 +84,8 @@ PROGRAM REION
   READ(ZLUMARG, '(F10.5)') ZLUM
   READ(FESCARG, '(F10.5)') FESC
 
-  ! fesc_pop2 = 0.1
-  fesc_pop2 = fesc 
+  fesc_pop2 = 0.1
+  ! fesc_pop2 = fesc 
 
   ! ----------------------------------------
 
@@ -378,6 +378,7 @@ PROGRAM REION
   write (58,*) 'fstar=', fstar
   write (58,*) 'fstar_pop3=', fstar_pop3
   write (58,*) 'fesc=', fesc 
+  write (58,*) 'fesc_pop2=', fesc_pop2 
   write (58,*) 'pop2 imf:', minf, msup 
   write (58,*) 'pop3 imf:', minf_pop3, msup_pop3
   write (58,*) 'imf_slope', imf_slope
@@ -386,6 +387,7 @@ PROGRAM REION
   write (58,*) 'stmass_uplimit=', stmass_uplimit 
   write (58,*) 'eta=', eta
   write (58,*) 'Enrich_time_lag=', Enrich_time_lag
+
 
   do 
      countr = countr + 1 
