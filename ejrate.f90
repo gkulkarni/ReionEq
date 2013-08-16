@@ -11,7 +11,7 @@ function ejrate(z, species)
   use constants 
   use storage 
   use interfaces, only : getsfr, imf, imf_pop3, interpolate2, bi_interpolate2, &
-       &getmet, sfr_rollinde_pop3, sfr_rollinde_pop2, getsfr2, getsfr3 
+       &getmet, sfr_rollinde_pop3, sfr_rollinde_pop2, getsfr2, getsfr3, dtdz
   implicit none 
   real(kind=prec), intent(in) :: z 
   integer, intent(in) :: species 
@@ -82,141 +82,190 @@ contains
     real(kind=prec), intent(in) :: m 
     real(kind=prec) :: integrand
     real(kind=prec) :: mr, st_age, rs, psi2, psi3, mej, zmet, &
-         &lzmet, st_ageyr, integrand2, integrand3, tsfr  
+         &lzmet, st_ageyr, integrand2, integrand3, tsfr, frac, contribution, dt 
     logical :: m_overflow, m_underflow, zmet_overflow, zmet_underflow 
 
     if (all_species) then 
-       call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
-       st_ageyr = st_age*1.0e6_prec ! yr 
-       ! Subtraction by Enrich_time_lag below is crucial!
-       tsfr = t-st_ageyr-Enrich_time_lag
-       if (tsfr < 0.0_prec) tsfr = 0.0_prec 
-       call interpolate2(zarr, tarr, tsfr, rs) 
-       zmet = getmet(rs) 
 
-       m_overflow = .false. 
-       m_underflow = .false. 
-       if (m > data_mmax) then 
-          m_overflow = .true. 
-       else if (m < data_mmin) then 
-          m_underflow = .true. 
-       end if
+       integrand = 0.0_prec 
+       tsfr = t - Enrich_time_lag 
+       do 
+          if (tsfr < 0.0) exit  
 
-       zmet_overflow = .false. 
-       zmet_underflow = .false. 
-       if (zmet > data_zmetmax) then 
-          zmet_overflow = .true. 
-       else if (zmet < data_zmetmin) then 
-          zmet_underflow = .true. 
-       end if
+          ! Calculate mej 
 
-       if (m_overflow) then 
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, data_mmax, mr)
-             mr = (mr/data_mmax)*m
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, data_mmax, mr)
-             mr = (mr/data_mmax)*m
-          else 
-             call bi_interpolate2(stmet, stmass, rem_mas, zmet, data_mmax, mr)
-             mr = (mr/data_mmax)*m
+          call interpolate2(zarr, tarr, tsfr, rs) 
+          zmet = getmet(rs) 
+
+          m_overflow = .false. 
+          m_underflow = .false. 
+          if (m > data_mmax) then 
+             m_overflow = .true. 
+          else if (m < data_mmin) then 
+             m_underflow = .true. 
           end if
-       else if (m_underflow) then 
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, data_mmin, mr)
-             mr = (mr/data_mmin)*m 
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, data_mmin, mr)
-             mr = (mr/data_mmin)*m 
-          else 
-             call bi_interpolate2(stmet, stmass, rem_mas, zmet, data_mmin, mr)
-             mr = (mr/data_mmin)*m 
+
+          zmet_overflow = .false. 
+          zmet_underflow = .false. 
+          if (zmet > data_zmetmax) then 
+             zmet_overflow = .true. 
+          else if (zmet < data_zmetmin) then 
+             zmet_underflow = .true. 
           end if
-       else
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, m, mr)
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, m, mr)
-          else 
-             call bi_interpolate2(stmet, stmass, rem_mas, zmet, m, mr)
+
+          if (m_overflow) then 
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, data_mmax, mr)
+                mr = (mr/data_mmax)*m
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, data_mmax, mr)
+                mr = (mr/data_mmax)*m
+             else 
+                call bi_interpolate2(stmet, stmass, rem_mas, zmet, data_mmax, mr)
+                mr = (mr/data_mmax)*m
+             end if
+          else if (m_underflow) then 
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, data_mmin, mr)
+                mr = (mr/data_mmin)*m 
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, data_mmin, mr)
+                mr = (mr/data_mmin)*m 
+             else 
+                call bi_interpolate2(stmet, stmass, rem_mas, zmet, data_mmin, mr)
+                mr = (mr/data_mmin)*m 
+             end if
+          else
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmax, m, mr)
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, rem_mas, data_zmetmin, m, mr)
+             else 
+                call bi_interpolate2(stmet, stmass, rem_mas, zmet, m, mr)
+             end if
           end if
-       end if
 
-       psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
-       integrand2 = imf(m)*(m-mr)*psi2 ! yr^-1 Mpc^-3 
+          ! Calculate frac 
+          dt = dtdz(rs)*dz ! yr 
+          frac = frac_ej(t-tsfr) * dt ! dimensionless 
 
-       psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
-       integrand3 = imf_pop3(m)*(m-mr)*psi3 ! yr^-1 Mpc^-3 
+          psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
+          integrand2 = imf(m)*(m-mr)*psi2*frac ! yr^-1 Mpc^-3 
 
-       if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 
+          psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
+          integrand3 = imf_pop3(m)*(m-mr)*psi3*frac ! yr^-1 Mpc^-3 
 
-       integrand = integrand2 + integrand3 ! yr^-1 Mpc^-3 
+          if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 
+
+          contribution = integrand2 + integrand3 ! yr^-1 Mpc^-3 
+
+          integrand = integrand + contribution 
+          t = t + dt 
+       end do
     else 
-       call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
-       st_ageyr = st_age*1.0e6_prec ! yr 
-       call interpolate2(zarr, tarr, t-st_ageyr, rs) 
-       zmet = getmet(rs) 
 
-       m_overflow = .false. 
-       m_underflow = .false. 
-       if (m > data_mmax) then 
-          m_overflow = .true. 
-       else if (m < data_mmin) then 
-          m_underflow = .true. 
-       end if
+       integrand = 0.0_prec 
+       tsfr = t - Enrich_time_lag 
+       do 
+          if (tsfr < 0.0) exit  
 
-       zmet_overflow = .false. 
-       zmet_underflow = .false. 
-       if (zmet > data_zmetmax) then 
-          zmet_overflow = .true. 
-       else if (zmet < data_zmetmin) then 
-          zmet_underflow = .true. 
-       end if
+          ! Calculate mej 
 
-       if (m_overflow) then 
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, data_mmax, mej)
-             mej = (mej/data_mmax)*m
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, data_mmax, mej)
-             mej = (mej/data_mmax)*m
-          else 
-             call bi_interpolate2(stmet, stmass, sp_mass, zmet, data_mmax, mej)
-             mej = (mej/data_mmax)*m
+          call interpolate2(zarr, tarr, tsfr, rs) 
+          zmet = getmet(rs) 
+
+          m_overflow = .false. 
+          m_underflow = .false. 
+          if (m > data_mmax) then 
+             m_overflow = .true. 
+          else if (m < data_mmin) then 
+             m_underflow = .true. 
           end if
-       else if (m_underflow) then 
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, data_mmin, mej)
-             mej = (mej/data_mmin)*m
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, data_mmin, mej)
-             mej = (mej/data_mmin)*m
-          else 
-             call bi_interpolate2(stmet, stmass, sp_mass, zmet, data_mmin, mej)
-             mej = (mej/data_mmin)*m
+
+          zmet_overflow = .false. 
+          zmet_underflow = .false. 
+          if (zmet > data_zmetmax) then 
+             zmet_overflow = .true. 
+          else if (zmet < data_zmetmin) then 
+             zmet_underflow = .true. 
           end if
-       else
-          if (zmet_overflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, m, mej)
-          else if (zmet_underflow) then 
-             call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, m, mej)
-          else 
-             call bi_interpolate2(stmet, stmass, sp_mass, zmet, m, mej)
+
+          if (m_overflow) then 
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, data_mmax, mej)
+                mej = (mej/data_mmax)*m
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, data_mmax, mej)
+                mej = (mej/data_mmax)*m
+             else 
+                call bi_interpolate2(stmet, stmass, sp_mass, zmet, data_mmax, mej)
+                mej = (mej/data_mmax)*m
+             end if
+          else if (m_underflow) then 
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, data_mmin, mej)
+                mej = (mej/data_mmin)*m
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, data_mmin, mej)
+                mej = (mej/data_mmin)*m
+             else 
+                call bi_interpolate2(stmet, stmass, sp_mass, zmet, data_mmin, mej)
+                mej = (mej/data_mmin)*m
+             end if
+          else
+             if (zmet_overflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmax, m, mej)
+             else if (zmet_underflow) then 
+                call bi_interpolate2(stmet, stmass, sp_mass, data_zmetmin, m, mej)
+             else 
+                call bi_interpolate2(stmet, stmass, sp_mass, zmet, m, mej)
+             end if
           end if
-       end if
 
-       psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
-       integrand2 = imf(m)*mej*psi2 ! yr^-1 Mpc^-3 
+          ! Calculate frac 
+          dt = dtdz(rs)*dz ! yr 
+          frac = frac_ej(t-tsfr) * dt ! dimensionless 
 
-       psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
-       integrand3 = imf_pop3(m)*mej*psi3 ! yr^-1 Mpc^-3 
+          psi2 = getsfr2(rs) ! M_solar yr^-1 Mpc^-3
+          integrand2 = imf(m)*mej*psi2 ! yr^-1 Mpc^-3 
 
-       if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 
+          psi3 = getsfr3(rs) ! M_solar yr^-1 Mpc^-3
+          integrand3 = imf_pop3(m)*mej*psi3 ! yr^-1 Mpc^-3 
 
-       integrand = integrand2 + integrand3 ! yr^-1 Mpc^-3 
+          if (m > POP2_UPLIMIT) integrand2 = 0.0_prec 
+
+          contribution = integrand2 + integrand3 ! yr^-1 Mpc^-3 
+
+          integrand = integrand + contribution 
+          t = t + dt 
+       end do
+
     end if
 
   end function integrand
+
+  function frac_ej(t) 
+
+    implicit none 
+    real(kind = prec), intent(in) :: t 
+    real(kind = prec) :: frac_ej 
+
+    real(kind = prec) :: slope 
+
+    if (t > Enrich_time_lag) then 
+       frac_ej = 0.0_prec 
+    else if (t < Enrich_time_lag) then 
+       frac_ej = 0.0_prec 
+    else  
+       ! This slope is determined from the condition that all mass should
+       ! be ejected between time 0 and Enrich_time_lag, i.e., the
+       ! integral of frac_ej(t)dt should be unity over this interval.
+       slope = 2.0_prec / Enrich_time_lag**2 ! yr^-2
+       frac_ej = slope * t ! yr^-1 
+    end if
+
+  end function frac_ej
+
 
 end function ejrate
 
