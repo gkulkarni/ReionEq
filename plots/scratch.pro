@@ -70,3 +70,6 @@ readcol, '../data/mzr_maiolino.dat', mst, dx2, dx1, met, dy2, dy1
 oplot, mst, met, psym=8, color=2
 plot_err, mst, met, dy1, dy2=dy2, dx1=dx1, dx2=dx2, color=2
 
+
+3.56270e+07      50.0093
+5.97869e+09      1.00003
