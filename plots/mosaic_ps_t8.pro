@@ -1,7 +1,7 @@
 PRO mosaic_ps, set_lowmass, set_highmass 
 
-; set_lowmass: result set corresponding to 1-100 Msun IMF. 
-; set_highmass: result set corresponding to 100-260 Msun IMF. 
+; set_lowmass: result set corresponding to 1-100 Msun IMF. (set93)
+; set_highmass: result set corresponding to 100-260 Msun IMF. (set96) 
 
 set_plot, 'ps'
 device, filename='mosaic.ps', xsize=24.0, ysize=8.0, /inches, color=1, yoffset=1.0
