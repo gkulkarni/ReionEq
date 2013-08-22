@@ -13,4 +13,6 @@ popsyn
 todo
 *.mod
 foo
+*.ps 
+scratch
 
