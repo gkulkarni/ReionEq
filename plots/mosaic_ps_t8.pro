@@ -182,7 +182,7 @@ oplot, x, y, psym=8, color=5
 oploterror, x, y, dy, errcolor=5, psym=3, /nohat 
 
 vline, 7.5, linestyle=2
-xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
+xyouts, 6.5, 1.0e-6, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 legend, ['(b2)'], /right, charsize=1.1, box=0 
 
