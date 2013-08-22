@@ -87,13 +87,13 @@ contains
 
        integrand = 0.0_prec 
        tsfr = t - Enrich_time_lag 
-       if (tsfr < 0.0_prec) t = 0.0_prec 
+       if (tsfr < 0.0_prec) tsfr = 0.0_prec 
        do 
           if (tsfr > t) exit  
 
           call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
           st_ageyr = st_age*1.0e6_prec ! yr 
-          call interpolate2(zarr, tarr, t-st_ageyr, rs_sf) 
+          call interpolate2(zarr, tarr, tsfr-st_ageyr, rs_sf) 
           zmet = getmet(rs_sf) 
           call interpolate2(zarr, tarr, tsfr, rs) 
           
@@ -162,19 +162,19 @@ contains
           contribution = integrand2 + integrand3 ! yr^-1 Mpc^-3 
 
           integrand = integrand + contribution 
-          t = t + dt 
+          tsfr = tsfr + dt 
        end do
     else 
 
        integrand = 0.0_prec 
        tsfr = t - Enrich_time_lag 
-       if (tsfr < 0.0_prec) t = 0.0_prec 
+       if (tsfr < 0.0_prec) tsfr = 0.0_prec 
        do 
           if (tsfr > t) exit  
 
           call interpolate2(stellar_age, stellar_mass, m, st_age) ! [st_age] = Myr
           st_ageyr = st_age*1.0e6_prec ! yr 
-          call interpolate2(zarr, tarr, t-st_ageyr, rs_sf) 
+          call interpolate2(zarr, tarr, tsfr-st_ageyr, rs_sf) 
           zmet = getmet(rs_sf) 
           call interpolate2(zarr, tarr, tsfr, rs) 
 
@@ -244,7 +244,7 @@ contains
           contribution = integrand2 + integrand3 ! yr^-1 Mpc^-3 
 
           integrand = integrand + contribution 
-          t = t + dt 
+          tsfr = tsfr + dt 
        end do
 
     end if
