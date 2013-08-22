@@ -39,6 +39,8 @@ oplot, z, halos, color=3
 halos = alog10(halos_data.field001[100,*])+10.0
 oplot, z, halos, color=5
 
+vline, 7.5, linestyle=2
+
 legend, ['!NM!Dmin!N (HII region)'], linestyle=[5], charsize=1.1, /bottom, number=3
 legend, ['(a1)'], /right, charsize=1.1, box=0 
 
@@ -83,6 +85,9 @@ for i = 0, 99 do begin
 endfor 
 Zmetal = alog10(Zmetal) 
 oplot, z, Zmetal, color=2
+
+vline, 7.5, linestyle=2
+xyouts, 6.5, -3.0, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 hline, -4.0, linestyle=2
 xyouts, 2.0, -3.8, 'Z!Dcrit!N', charsize=1.5, alignment=0.5
