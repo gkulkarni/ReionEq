@@ -1,7 +1,7 @@
 PRO mosaic_ps, set_lowmass, set_highmass 
 
-; set_lowmass: result set corresponding to 1-100 Msun IMF. 
-; set_highmass: result set corresponding to 100-260 Msun IMF. 
+; set_lowmass: result set corresponding to 1-100 Msun IMF. (set122)
+; set_highmass: result set corresponding to 100-260 Msun IMF. (set123)
 
 set_plot, 'ps'
 device, filename='mosaic.ps', xsize=24.0, ysize=8.0, /inches, color=1, yoffset=1.0
@@ -38,6 +38,8 @@ oplot, z, halos, color=3
 halos = alog10(halos_data.field001[100,*])+10.0
 oplot, z, halos, color=5
 
+vline, 9.5, linestyle=2
+
 legend, ['!NM!Dmin!N (HII region)'], linestyle=[5], charsize=1.1, /bottom, number=3
 legend, ['(a1)'], /right, charsize=1.1, box=0 
 
@@ -65,6 +67,10 @@ oplot, z, Zmetal, color=5
 legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Ddelay!N=10!E9!N yr'], charsize=1.1, box=0
 ; legend, ['Pop. III IMF: 100-260 M!D!9n!X', 't!Ddelay!N=0 yr'], charsize=1.1, box=0
 legend, ['(a2)'], /right, charsize=1.1, box=0 
+
+vline, 9.5, linestyle=2
+xyouts, 8.0, -3.0, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
+
 
 metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
 gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
