@@ -117,7 +117,7 @@ gpi3 = reiondata.field06
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-;gpi3 = smooth(gpi3, 3) 
+; gpi3 = smooth(gpi3, 10, /edge_truncate) 
 for i = 0, 60 do begin 
    gpi3[i] = gpi[i]
 endfor
@@ -127,8 +127,8 @@ gpi = gpi*2.0
 gpi3 = gpi3*2.0
 
 tick = replicate(' ',3)
-plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e6], xstyle=1, xtitle='!6redshift', $
-      ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', ytickformat='exp2',$
+plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-7, 3.0], xstyle=1, xtitle='!6redshift', $
+      ytitle='!7C!6!DHI!N/10!E-12!Ns!E-1!N', ytickformat='exp2',$
       /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], xtickname=tick, ystyle=1
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, redshift, gpi 
@@ -142,7 +142,7 @@ gpi3 = reiondata.field06
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-;gpi3 = smooth(gpi3, 3) 
+; gpi3 = smooth(gpi3, 10, /edge_truncate) 
 for i = 0, 60 do begin 
    gpi3[i] = gpi[i]
 endfor
@@ -184,11 +184,11 @@ oploterror, x, y, dy, errcolor=5, psym=3, /nohat
 vline, 7.5, linestyle=2
 xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
-al_legend, ['Faucher-Giguere 08', 'Meiksin and White 04', 'Bolton and Haehnelt 07', $
-            '1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', '100-260 M!D!9n!X!N (total)', $
-            '100-260 M!D!9n!X!N (pop. III)'], linestyle=[0,0,0,0,5,0,5], psym=[8,8,8,0,0,0,0], $
-           color=[5,3,2,-1,-1,2,2], /right, charsize=1.1, background_color=6
-legend, ['(b2)'], /bottom, charsize=1.1, box=0 
+legend, ['(b2)'], /right, charsize=1.1, box=0 
+
+xyouts, 10.0, 1.0e-2, 'Total (Pop. III + II)', size=1.0
+xyouts, 7.0, 1.0e-4, 'Pop. III (low mass)', alignment=1.0, size=1.0
+xyouts, 7.0, 5.0e-5, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
@@ -213,7 +213,7 @@ sfe = 10.0^sf
 plotsym, 0, 0.5, /FILL
 tick = replicate(' ',3)
 plot, rs, sfe, psym=8, /ylog, /xlog, xrange=[1,50], $
-      ytitle='SFRD (M!D!9n!N!X yr!E-1!N Mpc!E-3 !N)', xstyle=1, yrange=[1.0e-10,1], $
+      ytitle='SFRD (M!D!9n!N!X yr!E-1!N Mpc!E-3 !N)', xstyle=1, yrange=[1.0e-6,1], $
       ytickformat='Exp1', position=[x3,0.1,x3+plotwidth,0.7], xtitle='!6redshift', $
       /nodata, xtickname=tick
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
@@ -254,10 +254,12 @@ pop3_frac2 = sfr_pop3/sfr_tot2
 vline, 7.5, linestyle=2
 xyouts, 6.2, 1.0e-3, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
-al_legend, ['Hopkins+Beacom 06','1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (pop. III)', $
-         '100-260 M!D!9n!X!N (total)', '100-260 M!D!9n!X!N (pop. III)'], linestyle=[0,0,5,0,5], $
-        psym=[8,0,0,0,0], color=[2,-1,-1,2,2], /bottom, charsize=1.1, background_color=6
 legend, ['(c2)'], /right, charsize=1.1, box=0 
+
+xyouts, 25.0, 6.0e-2, 'Total', size=1.0, alignment=0.5
+xyouts, 25.0, 3.0e-2, '(Pop. III + II)', size=1.0, alignment=0.5
+xyouts, 7.0, 1.0e-4, 'Pop. III (low mass)', alignment=1.0, size=1.0
+xyouts, 7.0, 5.0e-5, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 
 tick = replicate(' ',3)
 plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=9, yrange=[1.0e-4,1.0], $
