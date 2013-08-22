@@ -21,6 +21,16 @@ x1 = 0.05
 x2 = x1 + plotwidth + plotxspace 
 x3 = x2 + plotwidth + plotxspace 
 
+common cosmo, tpt, zpt 
+readcol, '../age.dat', h0t0, t0sec, t0yr 
+readcol, '../z.dat', htt, zoft
+local_hubble_0 = 1.023e-10*0.719 ; yr^-1 
+tarr = t0yr[0]-htt/local_hubble_0 
+zarr = zoft 
+tpt = ptr_new(tarr) 
+zpt = ptr_new(zarr) 
+
+
 ; Plot 1: Single halo Z evolution. 
 
 restore, 'mmintemplate.sav'
@@ -29,7 +39,8 @@ z = mmin_data.field1
 mminh = alog10(mmin_data.field3)+10.0
 tick = replicate(' ',3)
 plot, z, mminh, /xlog, xrange=[1,50], linestyle=5, ytitle = 'log!D10!N(M/M!D!9n!X!N)', $
-      yrange=[6,12], position=[x1,0.7,x1+plotwidth,0.97], xtickname=tick, xstyle=1
+      yrange=[6,12], position=[x1,0.7,x1+plotwidth,0.97], xtickname=tick, xstyle=9
+
 restore, 'halo_template.sav'
 halos_data = read_ascii(set_highmass + '/halos.out', template=stars_template)
 halos = alog10(halos_data.field001[170,*])+10.0
@@ -39,8 +50,14 @@ oplot, z, halos, color=3
 halos = alog10(halos_data.field001[100,*])+10.0
 oplot, z, halos, color=5
 
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+
 vline, 7.5, linestyle=2
 ; xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
+
+; cgaxis, xaxis=1, xlog=1, xrange=[5.97869e+09, 3.56270e+07], xstyle=1, /save
 
 al_legend, ['!NM!Dmin!N (HII region)'], linestyle=[5], charsize=1.1, /bottom, number=3, background_color=6
 legend, ['(a1)'], /right, charsize=1.1, box=0 
@@ -172,7 +189,7 @@ legend, ['(b2)'], /bottom, charsize=1.1, box=0
 
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
-      xstyle=1, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
+      xstyle=9, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
 oplot, redshift, ratio2, color=2 
 vline, 7.5, linestyle=2
 xyouts, 6.5, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
@@ -180,6 +197,9 @@ legend, ['(b1)'], charsize=1.1, box=0
 al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
         color=[-1,2], /bottom, charsize=1.1, background_color=6
 
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
 
 ; Plot 3: SFR 
 
@@ -231,7 +251,7 @@ al_legend, ['Hopkins+Beacom 06','1-100 M!D!9n!X!N (total)', '1-100 M!D!9n!X!N (p
 legend, ['(c2)'], /right, charsize=1.1, box=0 
 
 tick = replicate(' ',3)
-plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=1, yrange=[1.0e-4,1.0], $
+plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=9, yrange=[1.0e-4,1.0], $
       ytickformat='Exponent', position=[x3,0.7,x3+plotwidth,0.97], xtickname=tick, $
       ytitle='ratio (popIII/total)'
 oplot, z, pop3_frac2, color=2
@@ -243,8 +263,19 @@ al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
         color=[-1,2], /bottom, charsize=1.1, background_color=6
 legend, ['(c1)'], charsize=1.1, box=0 
 
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+
 device, /close_file
 set_plot, 'X'
 
 end
 
+function conv_axis, axis, index, value 
+  common cosmo
+  z = fltarr(1)
+  z[0] = value 
+  t = interpol(*tpt,*zpt,z) ; yr 
+  return, string(format='(f0.1)',alog10(t[0])) 
+end 
