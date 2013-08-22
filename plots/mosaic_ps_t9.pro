@@ -21,6 +21,16 @@ x1 = 0.05
 x2 = x1 + plotwidth + plotxspace 
 x3 = x2 + plotwidth + plotxspace 
 
+common cosmo, tpt, zpt 
+readcol, '../age.dat', h0t0, t0sec, t0yr 
+readcol, '../z.dat', htt, zoft
+local_hubble_0 = 1.023e-10*0.719 ; yr^-1 
+tarr = t0yr[0]-htt/local_hubble_0 
+zarr = zoft 
+tpt = ptr_new(tarr) 
+zpt = ptr_new(zarr) 
+
+
 ; Plot 1: Single halo Z evolution. 
 restore, 'mmintemplate.sav'
 mmin_data = read_ascii(set_highmass + '/mmin.out', template=mmintemplate) 
@@ -37,6 +47,11 @@ halos = alog10(halos_data.field001[140,*])+10.0
 oplot, z, halos, color=3
 halos = alog10(halos_data.field001[100,*])+10.0
 oplot, z, halos, color=5
+
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+
 
 vline, 9.5, linestyle=2
 
@@ -123,7 +138,7 @@ ratio1[90] = 1.0e-5
 
 tick = replicate(' ',3)
 plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-10, 1.0e6], xstyle=1, $
-      xtitle='!6redshift', ytitle='log!D10!N(!7C!6!DHI!N/10!E-12!Ns!E-1!N)', $
+      xtitle='!6redshift', ytitle='!7C!6!DHI!N/10!E-12!Ns!E-1!N', $
       ytickformat='exp2', /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], $
       xtickname=tick, ystyle=1
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
@@ -198,6 +213,10 @@ legend, ['(b1)'], charsize=1.1, box=0
 al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
         color=[-1,2], /bottom, charsize=1.1, background_color=6
 
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+
 
 ; Plot 3: SFR 
 
@@ -259,8 +278,21 @@ al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
         color=[-1,2], /bottom, charsize=1.1, background_color=6
 legend, ['(c1)'], charsize=1.1, box=0 
 
+tck = loglevels([1.0,50.0])
+ntck = size(tck, /n_elements) 
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+
+
 device, /close_file
 set_plot, 'X'
 
 end
 
+
+function conv_axis, axis, index, value 
+  common cosmo
+  z = fltarr(1)
+  z[0] = value 
+  t = interpol(*tpt,*zpt,z) ; yr 
+  return, string(format='(f0.1)',alog10(t[0])) 
+end 
