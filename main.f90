@@ -267,6 +267,7 @@ PROGRAM REION
   BinsPerDecade = 100.0_prec
   log_multiplier = 10.0_prec**(1.0_prec/BinsPerDecade)
   n_halocalc = int(log10(mhalo_high/mhalo_low)/log10(log_multiplier))+1 
+  print *, 'n_halocalc=', n_halocalc 
 
   allocate(m_halosc(n_halocalc))
   allocate(mstar_halosc(n_halocalc))
@@ -393,6 +394,9 @@ PROGRAM REION
      countr = countr + 1 
      z = z + dz 
      if (z < final_redshift) exit 
+
+     print *, z 
+     call flush(0) 
 
      smc = 0.0_prec; smc_pop3 = 0.0_prec; smc_pop2 = 0.0_prec  
      smh = 0.0_prec; smh_pop3 = 0.0_prec; smh_pop2 = 0.0_prec 
@@ -797,6 +801,9 @@ PROGRAM REION
      mminh = getjmh(z)
      write (47, '(F4.1,3E11.3E2)') z, mminc, mminh, q*mminh+(1.0_prec-q)*mminc
 
+     print *, 'IGM calc done'
+     call flush(0) 
+
      ! The do-loop below evolves ``cool'' haloes i. e. haloes in H I regions. 
      do i = 1, n_halocalc
 
@@ -909,6 +916,9 @@ PROGRAM REION
 
         !----------------------------
 
+        write (0,*) 'about to calculate yields now; halo = ', i 
+        call flush(0) 
+
         if (mgas_halosc(i) == 0.0_prec) then 
 
            mmetal_halosc(i) = 0.0_prec
@@ -978,6 +988,9 @@ PROGRAM REION
            obyh_halosc(i) = log10(abs(mO_halosc(i)/mH_halos)) + 1.87
         end if
      end do
+
+     write (0,*) 'cold loop done' 
+     call flush(0) 
 
      ! The do-loop below evolves ``hot'' haloes i. e. haloes in H II regions. 
 
@@ -1217,6 +1230,7 @@ PROGRAM REION
      write (82, '(F4.1,270E11.3E2)') z, Zcr_timec
      write (83, '(F4.1,270E11.3E2)') z, FirstStar_timeh
      write (84, '(F4.1,270E11.3E2)') z, FirstStar_timec
+
 
   END DO
 
