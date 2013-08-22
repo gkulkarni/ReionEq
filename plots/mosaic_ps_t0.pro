@@ -1,7 +1,7 @@
 PRO mosaic_ps, set_lowmass, set_highmass 
 
-; set_lowmass: result set corresponding to 1-100 Msun IMF. 
-; set_highmass: result set corresponding to 100-260 Msun IMF. 
+; set_lowmass: result set corresponding to 1-100 Msun IMF. (set125)
+; set_highmass: result set corresponding to 100-260 Msun IMF. (set126) 
 
 set_plot, 'ps'
 device, filename='mosaic.ps', xsize=24.0, ysize=8.0, /inches, color=1, yoffset=1.0
@@ -184,8 +184,8 @@ xyouts, 6.5, 1.0e-4, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 legend, ['(b2)'], /right, charsize=1.1, box=0 
 
 xyouts, 10.0, 1.0e-2, 'Total (Pop. III + II)', size=1.0
-xyouts, 7.0, 5.0e-6, 'Pop. III (high mass)', alignment=1.0, size=1.0
-xyouts, 7.0, 1.0e-6, 'Pop. III (low mass)', alignment=1.0, size=1.0, color=2
+xyouts, 7.0, 5.0e-6, 'Pop. III (low mass)', alignment=1.0, size=1.0
+xyouts, 7.0, 1.0e-6, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
@@ -249,8 +249,8 @@ legend, ['(c2)'], /right, charsize=1.1, box=0
 
 xyouts, 25.0, 6.0e-2, 'Total', size=1.0, alignment=0.5
 xyouts, 25.0, 3.0e-2, '(Pop. III + II)', size=1.0, alignment=0.5
-xyouts, 7.0, 5.0e-6, 'Pop. III (high mass)', alignment=1.0, size=1.0
-xyouts, 7.0, 2.0e-6, 'Pop. III (low mass)', alignment=1.0, size=1.0, color=2
+xyouts, 7.0, 5.0e-6, 'Pop. III (low mass)', alignment=1.0, size=1.0
+xyouts, 7.0, 2.0e-6, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 
 
 tick = replicate(' ',3)
