@@ -79,7 +79,8 @@ FUNCTION GPH_KERNEL_POP3()
      INT2 = INT1 
   END DO
 
-  GPH_KERNEL_POP3 = SUM 
+  ! Scales SED suitably to bring in the IMF dependance. 
+  GPH_KERNEL_POP3 = SUM*Pop3_SEDScaleFactor 
 
 END FUNCTION GPH_KERNEL_POP3
 
@@ -104,7 +105,8 @@ FUNCTION GPI_KERNEL_POP3()
      INT2 = INT1 
   END DO
 
-  GPI_KERNEL_POP3 = SUM 
+  ! Scales SED suitable to bring in the IMG dependance.
+  GPI_KERNEL_POP3 = SUM*Pop3_SEDScaleFactor
 
 END FUNCTION GPI_KERNEL_POP3
 

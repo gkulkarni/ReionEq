@@ -945,6 +945,18 @@ MODULE INTERFACES
 
      end function hallum2
 
+     ! ---------------------- 
+     
+     function scale_sed()
+
+       use constants 
+       use storage 
+       implicit none 
+       
+       real(kind=prec) :: scale_sed 
+       
+     end function scale_sed
+
   END INTERFACE
 
 END MODULE INTERFACES

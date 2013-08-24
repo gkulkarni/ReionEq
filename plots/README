@@ -72,3 +72,22 @@ set126: 100-126 0
 set127: 100-126 10^9
 set128: 100-126 10^8 
 
+set134: fesc = 0.03 
+
+set136: fesc = 0.05
+set137: fesc = 0.07 
+set138: fesc = 0.09 
+set139: fesc = 0.11
+set140: fesc = 0.2
+
+--- 
+
+set134: fesc = 0.03 fstar = 0.002 fstar*fesc = 6.0e-5 
+
+set141: fstar = 0.004 fesc = 0.015
+set142: fstar = 0.006 fesc = 0.01
+set143: fstar = 0.008 fesc = 0.0075 
+set144: fstar = 0.01  fesc = 0.006 
+set145: fstar = 0.02  fesc = 0.003 
+
+

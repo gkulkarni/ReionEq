@@ -16,7 +16,7 @@ PROGRAM REION
        &interpolate2, getsfr2, getsfr3, getjmc, getjmh, haloyield_nonira, &
        &rtnewt, newtondelta, newtonfm, igmfposto, ejfrac_nonira, outfrac_nonira, &
        &haloyield_species_nonira, counter, ngammafrac, haloyield_species, &
-       &hallum2, bi_interpolate2 
+       &hallum2, bi_interpolate2, scale_sed  
   IMPLICIT NONE 
 
   REAL(KIND=PREC) :: A, B, BOUND, C, DFM, DGRF, DLT, DLTHI, DLTLO, &
@@ -49,7 +49,7 @@ PROGRAM REION
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
        &temp_sd93, lambda_sd93, t_test, fe_test, l_test, FirstStar_redshift, &
        &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3, &
-       &fesc_pop2, oldigmdcrit, oldlmfp  
+       &fesc_pop2, oldigmdcrit, oldlmfp, fake_ngamma
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -97,6 +97,8 @@ PROGRAM REION
   NGAMMA = 2.82E70_PREC ! (10^10 M_solar)^-1 
   NGAMMA_POP2 = NGAMMA 
   ngamma_pop3 = ngammafrac(z)*1.0e10 ! (10^10 M_solar)^-1
+  fake_ngamma = scale_sed()
+  Pop3_SEDScaleFactor = Ngamma_pop3 / fake_ngamma
 
   Z = INITIAL_REDSHIFT 
   Q = 1.0E-8_PREC 
