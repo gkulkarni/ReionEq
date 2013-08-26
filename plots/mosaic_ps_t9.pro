@@ -50,7 +50,8 @@ oplot, z, halos, color=5
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 
 vline, 9.5, linestyle=2
@@ -197,6 +198,11 @@ xyouts, 8.0, 1.0e-4, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 legend, ['(b2)'], /right, charsize=1.1, box=0 
 
+xyouts, 2.0, 5.0e-2, 'Total', size=1.0, alignment=0.4
+xyouts, 2.0, 2.0e-2, '(Pop. III + II)', size=1.0, alignment=0.4
+xyouts, 1.1, 5.0e-6, 'Pop. III (low mass)', size=1.0
+xyouts, 1.1, 3.0e-6, 'Pop. III (high mass)', size=1.0, color=2
+
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
       xstyle=9, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
@@ -258,6 +264,11 @@ vline, 9.5, linestyle=2
 xyouts, 8.0, 1.0e-3, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 legend, ['(c2)'], /right, charsize=1.1, box=0 
+
+xyouts, 2.0, 3.0e-2, 'Total', size=1.0, alignment=0.5
+xyouts, 2.0, 1.5e-2, '(Pop. III + II)', size=1.0, alignment=0.5
+xyouts, 1.1, 5.0e-6, 'Pop. III (low mass)', size=1.0
+xyouts, 1.1, 3.0e-6, 'Pop. III (high mass)', size=1.0, color=2
 
 tick = replicate(' ',3)
 plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=9, yrange=[1.0e-4,1.0], $
