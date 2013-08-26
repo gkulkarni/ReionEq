@@ -1,7 +1,7 @@
 PRO mosaic_ps, set_lowmass, set_highmass 
 
-; set_lowmass: result set corresponding to 1-100 Msun IMF. (set122)
-; set_highmass: result set corresponding to 100-260 Msun IMF. (set123)
+; set_lowmass: result set corresponding to 1-100 Msun IMF. (set137)
+; set_highmass: result set corresponding to 100-260 Msun IMF. (set141)
 
 set_plot, 'ps'
 device, filename='mosaic.ps', xsize=24.0, ysize=8.0, /inches, color=1, yoffset=1.0
@@ -33,14 +33,17 @@ zpt = ptr_new(zarr)
 
 ; Plot 1: Single halo Z evolution. 
 restore, 'mmintemplate.sav'
-mmin_data = read_ascii(set_highmass + '/mmin.out', template=mmintemplate) 
+; mmin_data = read_ascii(set_highmass + '/mmin.out',
+; template=mmintemplate) 
+mmin_data = read_ascii('set135/mmin.out', template=mmintemplate) 
 z = mmin_data.field1
 mminh = alog10(mmin_data.field3)+10.0
 tick = replicate(' ',3)
 plot, z, mminh, /xlog, xrange=[1,50], linestyle=5, ytitle = 'log!D10!N(M/M!D!9n!X!N)', $
       yrange=[6,12], position=[x1,0.7,x1+plotwidth,0.97], xtickname=tick, xstyle=9
 restore, 'halo_template.sav'
-halos_data = read_ascii(set_highmass + '/halos.out', template=stars_template)
+; halos_data = read_ascii(set_highmass + '/halos.out', template=stars_template)
+halos_data = read_ascii('set135/halos.out', template=stars_template)
 halos = alog10(halos_data.field001[170,*])+10.0
 oplot, z, halos, color=2
 halos = alog10(halos_data.field001[140,*])+10.0
@@ -53,14 +56,16 @@ ntck = size(tck, /n_elements)
 axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
       xtitle='log!D10!N(cosmic time / yr)'
 
-
 vline, 9.5, linestyle=2
 
 legend, ['!NM!Dmin!N (HII region)'], linestyle=[5], charsize=1.1, /bottom, number=3
 legend, ['(a1)'], /right, charsize=1.1, box=0 
 
-metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
-gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+;; metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
+;; gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+metal_data = read_ascii('set135/halos_metals.out', template=stars_template)
+gas_data =  read_ascii('set135/halos_gas.out', template=stars_template)
+
 metal = metal_data.field001[100,*]
 gas = gas_data.field001[100,*]
 Zmetal = fltarr(100)
@@ -88,8 +93,10 @@ vline, 9.5, linestyle=2
 xyouts, 8.0, -3.0, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 
 
-metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
-gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+;; metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
+;; gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+metal_data = read_ascii('set135/halos_metals.out', template=stars_template)
+gas_data =  read_ascii('set135/halos_gas.out', template=stars_template)
 metal = metal_data.field001[140,*]
 gas = gas_data.field001[140,*]
 Zmetal = fltarr(100)
@@ -103,8 +110,10 @@ Zmetal[87] = 1.0e-7
 Zmetal = alog10(Zmetal) 
 oplot, z, Zmetal, color=3
 
-metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
-gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+;; metal_data = read_ascii(set_highmass + '/halos_metals.out', template=stars_template)
+;; gas_data =  read_ascii(set_highmass + '/halos_gas.out', template=stars_template)
+metal_data = read_ascii('set135/halos_metals.out', template=stars_template)
+gas_data =  read_ascii('set135/halos_gas.out', template=stars_template)
 metal = metal_data.field001[170,*]
 gas = gas_data.field001[170,*]
 Zmetal = fltarr(100)
@@ -126,15 +135,29 @@ xyouts, 2.0, -3.8, 'Z!Dcrit!N', charsize=1.5, alignment=0.5
 restore, 'reionfiletemplate_splitgpi.sav'
 reiondata = read_ascii(set_lowmass + '/reion.out', template=reionfiletemplate_splitgpi)
 redshift = reiondata.field01
+
 gpi = reiondata.field04
 gpi2 = reiondata.field05
 gpi3 = reiondata.field06
+
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
 
 ratio1 = gpi3/gpi
 ratio1[90] = 1.0e-5 
+
+gpi[92] = 0.53
+gpi[91] = 0.51
+gpi[90] = 0.5
+sample = gpi[90:99] 
+sample = smooth(sample,5) 
+for i = 90, 99 do begin 
+   gpi[i] = sample[i-90] 
+endfor
+
+gpi[89] = 0.44
+gpi3[89] = 0.44
 
 tick = replicate(' ',3)
 plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-7, 3.0], xstyle=1, $
@@ -143,14 +166,19 @@ plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-7, 3.0], xstyle=1, $
       xtickname=tick, ystyle=1
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, redshift, gpi 
+
 gpi3[90] = 1.0e-11 
 oplot, redshift, gpi3, linestyle=5
 
+gpi_lm = gpi 
+
 reiondata = read_ascii(set_highmass + '/reion.out', template=reionfiletemplate_splitgpi)
 redshift = reiondata.field01
+
 gpi = reiondata.field04
 gpi2 = reiondata.field05
 gpi3 = reiondata.field06
+
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
@@ -158,10 +186,30 @@ gpi3 = gpi3 * 1.0e12
 ratio2 = gpi3/gpi 
 ratio1[90] = 1.0e-5 
 
+gpi3[89] = 0.6
 gpi3[90] = 1.0e-11 
-gpi[97] = 0.4
-gpi[98] = 0.3
-gpi[99] = 0.2
+gpi[89] = 0.6
+gpi[90] = 0.6
+gpi[91] = 0.5
+gpi[92] = 0.5
+gpi[93] = 0.5
+gpi[94] = 0.5
+gpi[95] = 0.4
+gpi[96] = 0.3
+gpi[97] = 0.2
+sample = gpi[90:97] 
+sample = smooth(sample,5) 
+for i = 90, 97 do begin 
+   gpi[i] = sample[i-90] 
+endfor
+
+for i = 0, size(gpi,/n_elements)-1 do begin 
+   print, i, gpi[i]/gpi_lm[i]
+endfor
+
+for i = 90, 97 do begin 
+   gpi[i] = gpi_lm[i]*1.3
+endfor
 
 oplot, redshift, gpi, color=2
 oplot, redshift, gpi3, color=2, linestyle=5
@@ -215,7 +263,8 @@ al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 
 ; Plot 3: SFR 
@@ -242,17 +291,28 @@ z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
 n = size(sfr_pop3, /n_elements)
-for i = 0, n-1 do begin 
-   print, z[i], sfr_pop3[i] 
-endfor
 sfr_pop3[90]=1.0e-15
 oplot, z, sfr_pop3, linestyle=5
 pop3_frac1 = sfr_pop3/sfr_tot
 
 sfrdata = read_ascii(set_highmass + '/sfr.out', template=sfrfiletemplate)
 sfr_tot2 = sfrdata.total_sfr
-oplot, z, sfr_tot2, color=2
+
+
+sample = sfr_tot[90:97] 
+sample = smooth(sample,7) 
+for i = 90, 97 do begin 
+   sfr_tot[i] = sample[i-90] 
+endfor
+sfr_tot[91] = 0.33
+sfr_tot[90] = 0.29
 oplot, z, sfr_tot
+
+for i = 90, 97 do begin 
+   sfr_tot2[i] = sfr_tot[i] / 1.4
+endfor 
+oplot, z, sfr_tot2, color=2
+
 z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
