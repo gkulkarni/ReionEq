@@ -13,17 +13,17 @@ rs = cs_dat[0,*]
 cbyfe_avg = cs_dat[1,*]
 plotsym, 0, 0.7, /FILL
 plot, rs, cbyfe_avg, yrange=[-1.2,1.0], ytitle='[C/Fe]', $
-      xrange=[2,6.5], xstyle=1, ystyle=1
+      xrange=[2,6.5], xstyle=1, ystyle=1, /nodata
 close, lun
 
-openr, lun, 'avgset2/avg_cbyfe_100_260_lag0.dat', /get_lun
-cs_dat = fltarr(2,10)
-readf, lun, cs_dat
-rs = cs_dat[0,*]
-cbyfe_avg = cs_dat[1,*]
-plotsym, 0, 0.7, /FILL
-oplot, rs, cbyfe_avg, linestyle=2
-close, lun
+;; openr, lun, 'avgset2/avg_cbyfe_100_260_lag0.dat', /get_lun
+;; cs_dat = fltarr(2,10)
+;; readf, lun, cs_dat
+;; rs = cs_dat[0,*]
+;; cbyfe_avg = cs_dat[1,*]
+;; plotsym, 0, 0.7, /FILL
+;; oplot, rs, cbyfe_avg, linestyle=2
+;; close, lun
 
 openr, lun, 'avgset2/avg_cbyfe_1_100_lag8.dat', /get_lun
 cs_dat = fltarr(2,10)
@@ -43,21 +43,21 @@ plotsym, 0, 0.7, /FILL
 oplot, rs, cbyfe_avg, color=2, linestyle=2
 close, lun
 
-openr, lun, 'avgset2/avg_cbyfe_1_100_lag9.dat', /get_lun
-cs_dat = fltarr(2,10)
-readf, lun, cs_dat
-rs = cs_dat[0,*]
-cbyfe_avg = cs_dat[1,*]
-plotsym, 0, 0.7, /FILL
-oplot, rs, cbyfe_avg, color=3
-close, lun
+;; openr, lun, 'avgset2/avg_cbyfe_1_100_lag9.dat', /get_lun
+;; cs_dat = fltarr(2,10)
+;; readf, lun, cs_dat
+;; rs = cs_dat[0,*]
+;; cbyfe_avg = cs_dat[1,*]
+;; plotsym, 0, 0.7, /FILL
+;; oplot, rs, cbyfe_avg, color=3
+;; close, lun
 
-openr, lun, 'avgset2/avg_cbyfe_100_260_lag9.dat', /get_lun
-cs_dat = fltarr(2,10)
-readf, lun, cs_dat
-rs = cs_dat[0,*]
-cbyfe_avg = cs_dat[1,*]
-plotsym, 0, 0.7, /FILL
-oplot, rs, cbyfe_avg, color=3, linestyle=2
-close, lun
+;; openr, lun, 'avgset2/avg_cbyfe_100_260_lag9.dat', /get_lun
+;; cs_dat = fltarr(2,10)
+;; readf, lun, cs_dat
+;; rs = cs_dat[0,*]
+;; cbyfe_avg = cs_dat[1,*]
+;; plotsym, 0, 0.7, /FILL
+;; oplot, rs, cbyfe_avg, color=3, linestyle=2
+;; close, lun
 
