@@ -84,8 +84,8 @@ PROGRAM REION
   READ(ZLUMARG, '(F10.5)') ZLUM
   READ(FESCARG, '(F10.5)') FESC
 
-  fesc_pop2 = 0.1
-  ! fesc_pop2 = fesc 
+  ! fesc_pop2 = 0.1
+  fesc_pop2 = fesc 
 
   ! ----------------------------------------
 

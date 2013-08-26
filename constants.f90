@@ -75,7 +75,7 @@ MODULE CONSTANTS
        &TABGRF_ZINITIAL = 0.0_PREC, &
        &TABGRF_DZ = 0.005_PREC, &
        &FSTAR = 0.002E0_PREC, &
-       &FSTAR_POP3 = 0.02E0_PREC, &
+       &FSTAR_POP3 = 0.004E0_PREC, &
        &IGMDCRIT_PREO = 60.0_PREC, & ! dimensionless; IGMDCRIT_PREO is the 
                                 ! critical density of IGM in the pre-overlap stage.  Only 
                                 ! regions with density less than this will be ionized in that
@@ -103,10 +103,10 @@ MODULE CONSTANTS
        MSUP = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 2 IMF) 
        IMF_SLOPE = 1.3_PREC, & ! (Slope of IMF - 1), 1.3 for Salpeter, 1.7 for Scalo
        OUTFLOW_EFFICIENCY = 1.0e-6_PREC, & ! See outflow.f90 
-       MINF_POP3 = 100.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
-       MSUP_POP3 = 260.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
-!!$       MINF_POP3 = 1.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
-!!$       MSUP_POP3 = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
+!!$       MINF_POP3 = 100.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
+!!$       MSUP_POP3 = 260.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
+       MINF_POP3 = 1.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
+       MSUP_POP3 = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
        DATA_MMIN = 12.07_PREC, & ! M_Solar; Minimum stellar mass in yields data time 
        DATA_MMAX = 266.0_PREC, & ! M_Solar; Maximum stellar mass in yields data time 
      ! DATA_MMAX = 40.22_PREC, & ! M_Solar; Maximum stellar mass in yields data time 
@@ -119,7 +119,7 @@ MODULE CONSTANTS
        POP2_UPLIMIT = 130.0_prec, & ! M_solar
        STELLAR_INTEGRAL_MULTIPLIER = 1.25_prec, & 
 !!$       Enrich_time_lag = 0.0 ! yr ; used in haloyield_nonira.f90 
-       Enrich_time_lag = 1.0e9_prec ! yr ; used in haloyield_nonira.f90 
+       Enrich_time_lag = 8.0e8_prec ! yr ; used in haloyield_nonira.f90 
 
 
   INTEGER, PARAMETER :: DATA_COLUMNS = 25
