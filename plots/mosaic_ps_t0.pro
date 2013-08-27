@@ -52,7 +52,8 @@ oplot, z, halos, color=5
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 vline, 7.5, linestyle=2
 ; xyouts, 6.5, 1.0e-8, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
@@ -187,7 +188,20 @@ xyouts, 10.0, 1.0e-2, 'Total (Pop. III + II)', size=1.0
 xyouts, 7.0, 5.0e-6, 'Pop. III (low mass)', alignment=1.0, size=1.0
 xyouts, 7.0, 1.0e-6, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 
+readcol, '/home/girish/reion-eq/age.dat', h0t0, t0sec, t0yr 
+readcol, '/home/girish/reion-eq/z.dat', htt, zoft 
+local_hubble_0 = 1.023e-10*0.719
+zarr = zoft 
+tarr = t0yr(0)-htt/local_hubble_0
+
 tick = replicate(' ',3)
+for i = 0, size(ratio1,/n_elements)-1 do begin 
+   t = interpol(tarr,zarr,redshift[i])
+   tnew = t + 3.0e8
+   znew = interpol(zarr,tarr,tnew) 
+   print, redshift[i], znew
+   redshift[i] = znew
+endfor 
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
       xstyle=9, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
 oplot, redshift, ratio2, color=2 
@@ -196,6 +210,7 @@ xyouts, 6.5, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
 legend, ['(b1)'], charsize=1.1, box=0 
 al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
         color=[-1,2], /bottom, charsize=1.1, background_color=6
+
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 

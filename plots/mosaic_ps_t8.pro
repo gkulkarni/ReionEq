@@ -52,7 +52,8 @@ vline, 7.5, linestyle=2
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 
 legend, ['!NM!Dmin!N (HII region)'], linestyle=[5], charsize=1.1, /bottom, number=3
@@ -111,16 +112,14 @@ xyouts, 2.0, -3.8, 'Z!Dcrit!N', charsize=1.5, alignment=0.5
 restore, 'reionfiletemplate_splitgpi.sav'
 reiondata = read_ascii(set_lowmass + '/reion.out', template=reionfiletemplate_splitgpi)
 redshift = reiondata.field01
+
 gpi = reiondata.field04
 gpi2 = reiondata.field05
 gpi3 = reiondata.field06
+
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-; gpi3 = smooth(gpi3, 10, /edge_truncate) 
-for i = 0, 60 do begin 
-   gpi3[i] = gpi[i]
-endfor
 
 ratio1 = gpi3/gpi
 gpi = gpi*2.0
@@ -132,20 +131,18 @@ plot, redshift, gpi, /ylog, xrange=[1,50], yrange=[1.0e-7, 3.0], xstyle=1, xtitl
       /xlog, /nodata, position=[x2,0.1,x2+plotwidth,0.7], xtickname=tick, ystyle=1
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, redshift, gpi 
-oplot, redshift, gpi3, linestyle=5 
+oplot, redshift, gpi3, linestyle=5, thick=7
 
 reiondata = read_ascii(set_highmass + '/reion.out', template=reionfiletemplate_splitgpi)
 redshift = reiondata.field01
+
 gpi = reiondata.field04
 gpi2 = reiondata.field05
 gpi3 = reiondata.field06
+
 gpi = gpi * 1.0e12 
 gpi2 = gpi2 * 1.0e12 
 gpi3 = gpi3 * 1.0e12 
-; gpi3 = smooth(gpi3, 10, /edge_truncate) 
-for i = 0, 60 do begin 
-   gpi3[i] = gpi[i]
-endfor
 
 ratio2 = gpi3/gpi 
 gpi = gpi*2.0
@@ -193,6 +190,7 @@ xyouts, 7.0, 5.0e-5, 'Pop. III (high mass)', alignment=1.0, size=1.0, color=2
 tick = replicate(' ',3)
 plot, redshift, ratio1, position=[x2,0.7,x2+plotwidth,0.97], /xlog, /ylog, xrange=[1,50], $
       xstyle=9, xtickname=tick, ytitle='ratio (popIII/total)', ytickformat='Exponent', yrange=[1.0e-4,1.0]
+oplot, redshift, ratio1, thick=7
 oplot, redshift, ratio2, color=2 
 vline, 7.5, linestyle=2
 xyouts, 6.5, 1.0e-2, 'z!Dreion!N', orientation=90.0, charsize=1.5, alignment=0.5
@@ -202,7 +200,8 @@ al_legend, ['1-100 M!D!9n!X', '100-260 M!D!9n!X'], linestyle=[0,0], $
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 
 
@@ -230,11 +229,7 @@ z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
 n = size(sfr_pop3, /n_elements)
-sfr_pop3[84]=1.0e-15
-for i = 0, 60 do begin 
-   sfr_pop3[i] = sfr_tot[i]
-endfor
-oplot, z, sfr_pop3, linestyle=5
+oplot, z, sfr_pop3, linestyle=5, thick=7
 pop3_frac1 = sfr_pop3/sfr_tot
 
 sfrdata = read_ascii(set_highmass + '/sfr.out', template=sfrfiletemplate)
@@ -244,10 +239,6 @@ oplot, z, sfr_tot
 z = sfrdata.redshift
 sfr_pop2 = sfrdata.pop2_sfr
 sfr_pop3 = sfrdata.pop3_sfr
-sfr_pop3[84]=1.0e-15
-for i = 0, 60 do begin 
-   sfr_pop3[i] = sfr_tot2[i]
-endfor
 oplot, z, sfr_pop3, linestyle=5, color=2
 pop3_frac2 = sfr_pop3/sfr_tot2
 
@@ -265,6 +256,7 @@ tick = replicate(' ',3)
 plot, z, pop3_frac1, /ylog, /xlog, xrange=[1,50], xstyle=9, yrange=[1.0e-4,1.0], $
       ytickformat='Exponent', position=[x3,0.7,x3+plotwidth,0.97], xtickname=tick, $
       ytitle='ratio (popIII/total)'
+oplot, z, pop3_frac1, thick=7
 oplot, z, pop3_frac2, color=2
 
 vline, 7.5, linestyle=2
@@ -276,8 +268,8 @@ legend, ['(c1)'], charsize=1.1, box=0
 
 tck = loglevels([1.0,50.0])
 ntck = size(tck, /n_elements) 
-axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, xtitle='log!D10!N(cosmic time / yr)'
-
+axis, xstyle=1, xaxis=1, xtickformat='conv_axis', xtickv=tck, xticks=ntck-1, $
+      xtitle='log!D10!N(cosmic time / yr)'
 
 device, /close_file
 set_plot, 'X'
