@@ -75,7 +75,7 @@ MODULE CONSTANTS
        &TABGRF_ZINITIAL = 0.0_PREC, &
        &TABGRF_DZ = 0.005_PREC, &
        &FSTAR = 0.002E0_PREC, &
-       &FSTAR_POP3 = 0.004E0_PREC, &
+       &FSTAR_POP3 = 0.002E0_PREC, &
        &IGMDCRIT_PREO = 60.0_PREC, & ! dimensionless; IGMDCRIT_PREO is the 
                                 ! critical density of IGM in the pre-overlap stage.  Only 
                                 ! regions with density less than this will be ionized in that
@@ -119,7 +119,7 @@ MODULE CONSTANTS
        POP2_UPLIMIT = 130.0_prec, & ! M_solar
        STELLAR_INTEGRAL_MULTIPLIER = 1.25_prec, & 
 !!$       Enrich_time_lag = 0.0 ! yr ; used in haloyield_nonira.f90 
-       Enrich_time_lag = 8.0e8_prec ! yr ; used in haloyield_nonira.f90 
+       Enrich_time_lag = 0.0e0_prec ! yr ; used in haloyield_nonira.f90 
 
 
   INTEGER, PARAMETER :: DATA_COLUMNS = 25

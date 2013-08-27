@@ -49,7 +49,7 @@ PROGRAM REION
        &mcooldot, halo_lum, zlim, maglim, limsfrc, limsfrh, limsfr,&
        &temp_sd93, lambda_sd93, t_test, fe_test, l_test, FirstStar_redshift, &
        &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3, &
-       &fesc_pop2, oldigmdcrit, oldlmfp, fake_ngamma
+       &fesc_pop2, oldigmdcrit, oldlmfp, fake_ngamma, hy
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -370,7 +370,56 @@ PROGRAM REION
   allocate(halopop_hot(ncalc, n_halocalc))
   allocate(halopop_cold(ncalc, n_halocalc))
 
-  zlim = 10.0_prec 
+  ! The following four arrays are for implementing delay in
+  ! enrichment.
+  
+  ! In ejrate_array(dim1, dim2), dim2 tracks the various species
+  ! according to this mapping (where the numbers in the first column
+  ! are defined in ejrate.f90):
+  !
+  ! 0 -- 1 
+  ! 14 -- 2
+  ! 7 -- 3 
+  ! 9 -- 4 
+  ! 8 -- 5 
+  ! 11 -- 6 
+  ! 10 -- 7 
+  ! 15 -- 8 
+  ! 16 -- 9 
+
+  allocate(ejrate_array(ncalc, 9)) 
+  ejrate_array = 0.0_prec 
+
+  ! The following two arrays are 3-dimensional.  There structure is
+  ! as follows: array(dim1, dim2, dim3), where dim1 tracks redshift
+  ! steps of code, dim2 tracks halo mass bins, and dim3 tracks hot and
+  ! cold regions (dim3=1: cold; dim3=2: hot). 
+
+  allocate(haloyield_nonira_array(ncalc, n_halocalc, 2)) 
+  allocate(ejfrac_nonira_array(ncalc, n_halocalc, 2)) 
+
+  haloyield_nonira_array = 0.0_prec 
+  ejfrac_nonira_array = 0.0_prec
+  
+  ! In haloyield_species_nonira_array(dim1, dim2, dim3, dim4), dim3
+  ! tracks various species.  Other dimensions are same as
+  ! haloyield_nonira.  The species mapping is as follows, where the
+  ! numbers in the first column are defined in
+  ! haloyield_species_nonira.f90. 
+  ! 
+  ! 7 -- 1 
+  ! 14 -- 2 
+  ! 9 -- 3
+  ! 8 -- 4 
+  ! 11 -- 5 
+  ! 15 -- 6 
+  ! 10 -- 7 
+
+  allocate(haloyield_species_nonira_array(ncalc, n_halocalc, 7, 2)) 
+
+  haloyield_species_nonira_array = 0.0_prec 
+
+  Zlim = 10.0_prec 
   maglim = -18.0_prec 
   eta = 1.65_prec ! halo density profile index used in mcooldot below 
 
@@ -707,6 +756,8 @@ PROGRAM REION
      acc = accrate(z) ! 10^10 M_solar yr^-1 Mpc^-3
      ejc = ejrate(z,0) ! 10^10 M_solar yr^-1 Mpc^-3 
 
+     ejrate_array(countr-1, 1) = ejc 
+
      dm_igm = (ofl - acc)*dz*dtdz(z) ! 10^10 M_solar Mpc^-3 
      dm_str = (source - ejc)*dz*dtdz(z) ! 10^10 M_solar Mpc^-3 
      dm_ism = - dm_igm - dm_str ! 10^10 M_solar Mpc^-3 
@@ -731,13 +782,21 @@ PROGRAM REION
      ! All four quantities calculated below are DIMENSIONLESS.
 
      ejrate_fe = ejrate(z,14) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 2) = ejrate_fe
      ejrate_c = ejrate(z,7) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 3) = ejrate_c
      ejrate_o = ejrate(z,9) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 4) = ejrate_o
      ejrate_n = ejrate(z,8) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 5) = ejrate_n
      ejrate_si = ejrate(z,11) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 6) = ejrate_si
      ejrate_mg = ejrate(z,10) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 7) = ejrate_mg
      ejrate_zn = ejrate(z,15) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 8) = ejrate_zn
      ejrate_tot = ejrate(z,16) ! 10^10 M_solar yr^-1 Mpc^-3 
+     ejrate_array(countr-1, 9) = ejrate_tot
 
      xism_fe = xism_fe + dz*dtdz(z)*(acc*(xigm_fe-xism_fe) + &
           &(ejrate_fe-ejc*xism_fe))/m_ism ! dimensionless
@@ -892,6 +951,8 @@ PROGRAM REION
         end if
 
         return_fraction = ejfrac_nonira(z,1,i)
+        ejfrac_nonira_array(countr-1, i, 1) = return_fraction 
+
         mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
         mstardot_halosc(i) = mstardot ! 10^10 M_solar yr^-1
         mstar_halosc(i) = mstar_halosc(i) + dz*dtdz(z)*mstardot ! 10^10 M_solar yr^-1
@@ -923,39 +984,62 @@ PROGRAM REION
         else
 
            zeta = 0.9_prec * exp(-m_halosc(i)/3.0e2_prec) ! dimensionless 
+           hy = haloyield_nonira(z,1,i) 
            mmetaldot = fgas_in*(omega_b/omega_nr)*mdot*xigm_tot - &
                 &fout*mmetal_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_nonira(z,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_nonira_array(countr-1, i, 1) = hy
            mmetal_halosc(i) = mmetal_halosc(i) + dz*dtdz(z)*mmetaldot ! 10^10 M_solar 
            HaloMetalAbundance = (mmetal_halosc(i)/mgas_halosc(i))/0.02_prec 
            ismz_halosc(i) = HaloMetalAbundance 
+           
+           hy = haloyield_species_nonira(z,7,1,i)
            mCdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_c - &
                 &fout*mC_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,7,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 1, 1) = hy 
            mC_halosc(i) = mC_halosc(i) + dz*dtdz(z)*mCdot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,14,1,i)
            mFedot = fgas_in*(omega_b/omega_nr)*mdot*xigm_fe - &
                 &fout*mFe_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,14,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 2, 1) = hy 
            mFe_halosc(i) = mFe_halosc(i) + dz*dtdz(z)*mFedot ! 10^10 M_solar  
+
+           hy = haloyield_species_nonira(z,9,1,i)
            mOdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_o - &
                 &fout*mO_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,9,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 3, 1) = hy 
            mO_halosc(i) = mO_halosc(i) + dz*dtdz(z)*mOdot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,8,1,i)
            mNdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_n - &
                 &fout*mN_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,8,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 4, 1) = hy 
            mN_halosc(i) = mN_halosc(i) + dz*dtdz(z)*mNdot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,11,1,i)
            mSidot = fgas_in*(omega_b/omega_nr)*mdot*xigm_si - &
                 &fout*mSi_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,11,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 5, 1) = hy 
            mSi_halosc(i) = mSi_halosc(i) + dz*dtdz(z)*mSidot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,15,1,i)
            mZndot = fgas_in*(omega_b/omega_nr)*mdot*xigm_zn - &
                 &fout*mZn_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,15,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 6, 1) = hy
            mZn_halosc(i) = mZn_halosc(i) + dz*dtdz(z)*mZndot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,10,1,i)
            mMgdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_mg - &
                 &fout*mMg_halosc(i)/mgas_halosc(i)  &
-                &+ haloyield_species_nonira(z,10,1,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 7, 1) = hy
            mMg_halosc(i) = mMg_halosc(i) + dz*dtdz(z)*mMgdot ! 10^10 M_solar 
 
         end if
@@ -1074,6 +1158,8 @@ PROGRAM REION
         end if
 
         return_fraction = ejfrac_nonira(z, 2, i) ! 10^10 M_solar yr^-1 
+        ejfrac_nonira_array(countr-1, i, 2) = return_fraction 
+
         mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
         mstardot_halosh(i) = mstardot ! 10^10 M_solar yr^-1
         mstar_halosh(i) = mstar_halosh(i) + dz*dtdz(z)*mstardot ! 10^10 M_solar yr^-1
@@ -1105,49 +1191,62 @@ PROGRAM REION
         else
 
            zeta = 0.9_prec * exp(-m_halosh(i)/3.0e2_prec) ! dimensionless 
+           hy = haloyield_nonira(z,2,i)
            mmetaldot = fgas_in*(omega_b/omega_nr)*mdot*xigm_tot - &
                 &fout*mmetal_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_nonira(z,2,i)*(1.0_prec-zeta)
+                &+ hy*(1.0_prec-zeta)
+           haloyield_nonira_array(countr-1, i, 2) = hy 
            mmetal_halosh(i) = mmetal_halosh(i) + dz*dtdz(z)*mmetaldot   
            HaloMetalAbundance = (mmetal_halosh(i)/mgas_halosh(i))/0.02_prec 
            ismz_halosh(i) = HaloMetalAbundance 
+
+           hy = haloyield_species_nonira(z,7,2,i)
            mCdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_c - &
                 &fout*mC_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,7,2,i)*(1.0_prec-zeta)
-           mC_halosh(i) = mC_halosh(i) + dz*dtdz(z)*mCdot 
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 1, 2) = hy 
+           mC_halosh(i) = mC_halosh(i) + dz*dtdz(z)*mCdot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,14,2,i)
            mFedot = fgas_in*(omega_b/omega_nr)*mdot*xigm_fe - &
                 &fout*mFe_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,14,2,i)*(1.0_prec-zeta)
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 2, 2) = hy 
+           mFe_halosh(i) = mFe_halosh(i) + dz*dtdz(z)*mFedot ! 10^10 M_solar  
 
-           aux_halosh(i) = fout*mFe_halosh(i)/mgas_halosh(i) 
-           
-           mFe_halosh(i) = mFe_halosh(i) + dz*dtdz(z)*mFedot 
-
+           hy = haloyield_species_nonira(z,9,2,i)
            mOdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_o - &
                 &fout*mO_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,9,2,i)*(1.0_prec-zeta)
-           mO_halosh(i) = mO_halosh(i) + dz*dtdz(z)*mOdot   
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 3, 2) = hy 
+           mO_halosh(i) = mO_halosh(i) + dz*dtdz(z)*mOdot ! 10^10 M_solar 
 
-
+           hy = haloyield_species_nonira(z,8,2,i)
            mNdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_n - &
                 &fout*mN_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,8,2,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 4, 2) = hy 
            mN_halosh(i) = mN_halosh(i) + dz*dtdz(z)*mNdot ! 10^10 M_solar 
+
+           hy = haloyield_species_nonira(z,11,2,i)
            mSidot = fgas_in*(omega_b/omega_nr)*mdot*xigm_si - &
                 &fout*mSi_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,11,2,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 5, 2) = hy 
            mSi_halosh(i) = mSi_halosh(i) + dz*dtdz(z)*mSidot ! 10^10 M_solar 
 
-
+           hy = haloyield_species_nonira(z,15,2,i)
            mZndot = fgas_in*(omega_b/omega_nr)*mdot*xigm_zn - &
                 &fout*mZn_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,15,2,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 6, 2) = hy
            mZn_halosh(i) = mZn_halosh(i) + dz*dtdz(z)*mZndot ! 10^10 M_solar 
 
-
+           hy = haloyield_species_nonira(z,10,2,i)
            mMgdot = fgas_in*(omega_b/omega_nr)*mdot*xigm_mg - &
                 &fout*mMg_halosh(i)/mgas_halosh(i)  &
-                &+ haloyield_species_nonira(z,10,2,i)*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+                &+ hy*(1.0_prec-zeta) ! 10^10 M_solar yr^-1
+           haloyield_species_nonira_array(countr-1, i, 7, 2) = hy
            mMg_halosh(i) = mMg_halosh(i) + dz*dtdz(z)*mMgdot ! 10^10 M_solar 
 
         end if

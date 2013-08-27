@@ -50,5 +50,8 @@ MODULE STORAGE
   REAL(KIND=PREC), DIMENSION(:,:,:), ALLOCATABLE :: YIELDS 
   logical, dimension(:), allocatable :: NotEnrichedYet_hot, NotEnrichedYet_cold 
 
+  real(kind=prec), dimension(:,:,:), allocatable :: haloyield_nonira_array, ejfrac_nonira_array
+  real(kind=prec), dimension(:,:,:,:), allocatable :: haloyield_species_nonira_array
+  real(kind=prec), dimension(:,:), allocatable :: ejrate_array 
 END MODULE STORAGE
 
