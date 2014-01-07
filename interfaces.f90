@@ -957,6 +957,17 @@ MODULE INTERFACES
        
      end function scale_sed
 
+     ! ---------------------- 
+     
+     function MajorMergerRate(HaloMass, Redshift) 
+
+       use constants
+       implicit none 
+       real(kind = prec), intent(in) :: HaloMass, Redshift 
+       real(kind = prec) :: MajorMergerRate 
+
+     end function MajorMergerRate
+
   END INTERFACE
 
 END MODULE INTERFACES
