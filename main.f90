@@ -16,7 +16,7 @@ PROGRAM REION
        &interpolate2, getsfr2, getsfr3, getjmc, getjmh, haloyield_nonira, &
        &rtnewt, newtondelta, newtonfm, igmfposto, ejfrac_nonira, outfrac_nonira, &
        &haloyield_species_nonira, counter, ngammafrac, haloyield_species, &
-       &hallum2, bi_interpolate2, scale_sed  
+       &hallum2, bi_interpolate2, scale_sed, MajorMergerRate, dzdt 
   IMPLICIT NONE 
 
   REAL(KIND=PREC) :: A, B, BOUND, C, DFM, DGRF, DLT, DLTHI, DLTLO, &
@@ -51,7 +51,8 @@ PROGRAM REION
        &FirstStar_time, Zcr_redshift, Zcr_time, gammapi_pop2, gammapi_pop3, &
        &fesc_pop2, oldigmdcrit, oldlmfp, fake_ngamma, hy, hy_gradual, zold, &
        &ejrate_fe_gradual, ejrate_c_gradual, ejrate_o_gradual, ejrate_n_gradual, &
-       &ejrate_si_gradual, ejrate_mg_gradual, ejrate_zn_gradual, ejrate_tot_gradual
+       &ejrate_si_gradual, ejrate_mg_gradual, ejrate_zn_gradual, ejrate_tot_gradual, &
+       &burst_enhancement, starburst_duty_cycle 
 
   real(kind=prec) :: m_igm, m_ism, m_str, xigm_fe, xigm_c, xigm_o, &
        &xism_fe, xism_c, xism_o, dm_ism, dm_igm, dm_str, &
@@ -364,6 +365,8 @@ PROGRAM REION
      t_si(i) = 0.0_prec 
      t_fe(i) = 0.0_prec 
      t_o(i) = 0.0_prec 
+
+     aux_halosc(i) = 0.0_prec 
   end do
 
   allocate(sfrarr_halocalc_cold(ncalc, n_halocalc))
@@ -434,8 +437,9 @@ PROGRAM REION
 
   Zlim = 10.0_prec 
   maglim = -18.0_prec 
-  eta = 1.65_prec ! halo density profile index used in mcooldot below 
-
+  eta = 1.65_prec ! halo density profile index used in mcooldot below.
+  starburst_duty_cycle = 0.1 ! See plots/compare_sfr.pro.
+  
   write (58,*) 'initial_redshift=', initial_redshift 
   write (58,*) 'final_redshift=', final_redshift 
   write (58,*) 'dz=', dz 
@@ -507,6 +511,10 @@ PROGRAM REION
         n = (rho/m_halosc(i))*f*dsgm*(-deltac/(grw*sgm*sgm))*dm ! Mpc^-3 
 
         nofmc(i) = n 
+
+        burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
+             &* dzdt(z) * n * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 Mpc^-3 
+        aux_halosc(i) = burst_enhancement ! 10^10 M_solar yr^-1 Mpc^-3 
 
         if (strpop_halosc(i) == 3) then 
            smc_pop3 = smc_pop3 + mstardot_halosc(i)*n ! 10^10 M_solar yr^-1 Mpc^-3 
@@ -1550,7 +1558,7 @@ PROGRAM REION
      write (79,'(F4.1,270E11.3E2)') z, q*mstardot_halosh + (1.0_prec-q)*sfrcontrib_halosc 
      write (80,'(F4.1,270E11.3E2)') z, sfrcontrib_halosc 
 
-     write (49,'(F4.1,270E11.3E2)') z, aux_halosh 
+     write (49,'(F4.1,270E11.3E2)') z, aux_halosc
 
      write (50,'(F4.1,270E11.3E2)') z, q*m_halosh + (1.0_prec-q)*m_halosc 
      write (51,'(F4.1,270E11.3E2)') z, q*mstar_halosh + (1.0_prec-q)*mstar_halosc 
