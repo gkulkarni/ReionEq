@@ -60,17 +60,17 @@ oplot, z, limsfr, psym=-6, color=3
 ;; Plot luminosity-limited SFR result.
 readcol, 'set37/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
 limsfr = limsfr
-;oplot, z, limsfr, psym=-6, color=4
+oplot, z, limsfr, psym=-6, color=4
 
 ;; Plot luminosity-limited SFR result.
 readcol, 'set38/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
 limsfr = limsfr
-;oplot, z, limsfr, psym=-6, color=6
+oplot, z, limsfr, psym=-6, color=6
 
 ;; Plot luminosity-limited SFR result.
 readcol, 'set39/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
 limsfr = limsfr
-;oplot, z, limsfr, psym=-6, color=7
+oplot, z, limsfr, psym=-6, color=7
 
 END 
 

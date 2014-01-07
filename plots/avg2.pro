@@ -6,27 +6,27 @@
 ; This is a slave code for avg_multi.pro.  See that file to understand
 ; what this does. 
 
-openr, lun, 'avgset2/avg_obysi_1_100_lag0.dat', /get_lun
-cs_dat = fltarr(2,10)
+openr, lun, 'avgset4/avg_obysi_1_100_f.dat', /get_lun
+cs_dat = fltarr(2,18)
 readf, lun, cs_dat
 rs = cs_dat[0,*]
 cbyfe_avg = cs_dat[1,*]
 plotsym, 0, 0.7, /FILL
 plot, rs, cbyfe_avg, yrange=[-1.0,1.0], ytitle='[O/Si]', $
-      xrange=[2,6.5], xstyle=1, /nodata
+      xrange=[2,10.5], xstyle=1
 close, lun
 
-;; openr, lun, 'avgset2/avg_obysi_100_260_lag0.dat', /get_lun
-;; cs_dat = fltarr(2,10)
-;; readf, lun, cs_dat
-;; rs = cs_dat[0,*]
-;; cbyfe_avg = cs_dat[1,*]
-;; plotsym, 0, 0.7, /FILL
-;; oplot, rs, cbyfe_avg, linestyle=2
-;; close, lun
+openr, lun, 'avgset4/avg_obysi_100_260_f.dat', /get_lun
+cs_dat = fltarr(2,18)
+readf, lun, cs_dat
+rs = cs_dat[0,*]
+cbyfe_avg = cs_dat[1,*]
+plotsym, 0, 0.7, /FILL
+oplot, rs, cbyfe_avg, linestyle=2
+close, lun
 
-openr, lun, 'avgset2/avg_obysi_1_100_lag8.dat', /get_lun
-cs_dat = fltarr(2,10)
+openr, lun, 'avgset4/avg_obysi_1_100_m.dat', /get_lun
+cs_dat = fltarr(2,18)
 readf, lun, cs_dat
 rs = cs_dat[0,*]
 cbyfe_avg = cs_dat[1,*]
@@ -34,8 +34,8 @@ plotsym, 0, 0.7, /FILL
 oplot, rs, cbyfe_avg, color=2
 close, lun
 
-openr, lun, 'avgset2/avg_obysi_100_260_lag8.dat', /get_lun
-cs_dat = fltarr(2,10)
+openr, lun, 'avgset4/avg_obysi_100_260_m.dat', /get_lun
+cs_dat = fltarr(2,18)
 readf, lun, cs_dat
 rs = cs_dat[0,*]
 cbyfe_avg = cs_dat[1,*]
@@ -43,20 +43,20 @@ plotsym, 0, 0.7, /FILL
 oplot, rs, cbyfe_avg, color=2, linestyle=2
 close, lun
 
-;; openr, lun, 'avgset2/avg_obysi_1_100_lag9.dat', /get_lun
-;; cs_dat = fltarr(2,10)
-;; readf, lun, cs_dat
-;; rs = cs_dat[0,*]
-;; cbyfe_avg = cs_dat[1,*]
-;; plotsym, 0, 0.7, /FILL
-;; oplot, rs, cbyfe_avg, color=3
-;; close, lun
+openr, lun, 'avgset4/avg_obysi_1_100_o.dat', /get_lun
+cs_dat = fltarr(2,18)
+readf, lun, cs_dat
+rs = cs_dat[0,*]
+cbyfe_avg = cs_dat[1,*]
+plotsym, 0, 0.7, /FILL
+oplot, rs, cbyfe_avg, color=3
+close, lun
 
-;; openr, lun, 'avgset2/avg_obysi_100_260_lag9.dat', /get_lun
-;; cs_dat = fltarr(2,10)
-;; readf, lun, cs_dat
-;; rs = cs_dat[0,*]
-;; cbyfe_avg = cs_dat[1,*]
-;; plotsym, 0, 0.7, /FILL
-;; oplot, rs, cbyfe_avg, color=3, linestyle=2
-;; close, lun
+openr, lun, 'avgset4/avg_obysi_100_260_o.dat', /get_lun
+cs_dat = fltarr(2,18)
+readf, lun, cs_dat
+rs = cs_dat[0,*]
+cbyfe_avg = cs_dat[1,*]
+plotsym, 0, 0.7, /FILL
+oplot, rs, cbyfe_avg, color=3, linestyle=2
+close, lun

@@ -46,11 +46,11 @@ PRO abr2, row, z
 
 ;----------------------------------------
 
-  c_data2 = read_ascii('set95/halos_c.out', template=stars_template)
-  fe_data2 = read_ascii('set95/halos_fe.out', template=stars_template)
-  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set169/halos_c.out', template=stars_template)
+  fe_data2 = read_ascii('set169/halos_fe.out', template=stars_template)
+  m_data2 = read_ascii('set169/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set169/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -479,7 +479,7 @@ PRO abr2, row, z
 ;; oplot, cs, ns, psym=6, color=3, symsize=0.5
 
   ns_cbyfe = ns
-  cs_cbyfe2 = cs
+  cs_Cbyfe2 = Cs
   ns1_cbyfe = ns1
   cs1_cbyfe2 = cs1
   ns3_cbyfe = ns3
@@ -497,11 +497,11 @@ PRO abr2, row, z
 ; C = O 
 ; Fe = Si 
 
-  c_data2 = read_ascii('set95/halos_o.out', template=stars_template)
-  fe_data2 = read_ascii('set95/halos_Si.out', template=stars_template)
-  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set169/halos_o.out', template=stars_template)
+  fe_data2 = read_ascii('set169/halos_Si.out', template=stars_template)
+  m_data2 = read_ascii('set169/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set169/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -954,11 +954,11 @@ PRO abr2, row, z
 ; C = Zn 
 ; Fe = Fe
 
-  c_data2 = read_ascii('set95/halos_Zn.out', template=stars_template)
-  fe_data2 = read_ascii('set95/halos_fe.out', template=stars_template)
-  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set169/halos_Zn.out', template=stars_template)
+  fe_data2 = read_ascii('set169/halos_fe.out', template=stars_template)
+  m_data2 = read_ascii('set169/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set169/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -1407,11 +1407,11 @@ PRO abr2, row, z
 ; C = N
 ; Fe = O
 
-  c_data2 = read_ascii('set95/halos_N.out', template=stars_template)
-  fe_data2 = read_ascii('set95/halos_o.out', template=stars_template)
-  m_data2 = read_ascii('set95/halos.out', template=stars_template) 
+  c_data2 = read_ascii('set169/halos_N.out', template=stars_template)
+  fe_data2 = read_ascii('set169/halos_o.out', template=stars_template)
+  m_data2 = read_ascii('set169/halos.out', template=stars_template) 
   n_data2 = read_ascii('set34/nofmh.out', template=stars_template) 
-  gas_data2 = read_ascii('set95/halos_gas.out', template=stars_template)
+  gas_data2 = read_ascii('set169/halos_gas.out', template=stars_template)
 
   c2 = c_data2.field001[lcolumn:*,row]
   fe2 = fe_data2.field001[lcolumn:*,row]
@@ -1864,12 +1864,12 @@ PRO abr2, row, z
 
 ; Plot everything
 
-  plot, ms3_cbyfe, cs3_cbyfe, /xlog, xrange=[1.0e8, 1.0e11], yrange=[-0.2,1.0], xtitle='!6halo mass', ytitle='[C/Fe]', symsize=0.5, thick=3
+  plot, ms3_cbyfe, cs3_cbyfe, /xlog, xrange=[1.0e8, 1.0e14], yrange=[-0.2,1.0], xtitle='!6halo mass', ytitle='[C/Fe]', symsize=0.5, thick=3
   oplot, ms1_cbyfe, cs1_cbyfe, color=2, symsize=0.5, thick=3
   oplot, ms_cbyfe, cs_cbyfe, color=3, symsize=0.5, thick=3
   xyouts, 1.0e10, 0.8, redshift_label, charsize=0.7
 
-  plot, ms3_obysi, cs3_obysi, /xlog, xrange=[1.0e8, 1.0e11], yrange=[-0.5,1.0], xtitle='halo mass', ytitle='[O/Si]', symsize=0.5, thick=3
+  plot, ms3_obysi, cs3_obysi, /xlog, xrange=[1.0e8, 1.0e14], yrange=[-0.5,1.0], xtitle='halo mass', ytitle='[O/Si]', symsize=0.5, thick=3
   oplot, ms1_obysi, cs1_obysi, color=2, symsize=0.5, thick=3
   oplot, ms_obysi, cs_obysi, color=3, symsize=0.5, thick=3
   xyouts, 1.0e10, 0.75, redshift_label, charsize=0.7

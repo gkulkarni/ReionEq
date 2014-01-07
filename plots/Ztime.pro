@@ -9,16 +9,18 @@ Device, decomposed=0
 restore, 'halo_template.sav'
 
 set_name = 'set71' 
+; set_name = 'set125' 
 FirstStarTime_data = read_ascii(strtrim(set_name)+'/halos_Firststartimecold.out', $
                                 template=stars_template)
 FirstStarTime = FirstStarTime_data.field001[1:*,490] ; yr 
 HaloMass_data = read_ascii(strtrim(set_name)+'/halos.out', template=stars_template)
-HaloMass = HaloMass_data.field001[1:*,498]*1.0e10 ; yr 
+HaloMass = HaloMass_data.field001[1:*,498];*1.0e10 ; yr 
 ZcrTime_data = read_ascii(strtrim(set_name)+'/halos_Zcrtimecold.out', template=stars_template)
 ZcrTime = ZcrTime_data.field001[1:*,490] ; yr 
 EnrichmentTime = ZcrTime - FirstStarTime ; yr 
 
-set_name = 'set59' 
+; set_name = 'set59' 
+set_name = 'set165' 
 FirstStarTime_data = read_ascii(strtrim(set_name)+'/halos_Firststartimecold.out', $
                                 template=stars_template)
 FirstStarTime2 = FirstStarTime_data.field001[1:*,90] ; yr 
@@ -28,7 +30,8 @@ ZcrTime_data = read_ascii(strtrim(set_name)+'/halos_Zcrtimecold.out', template=s
 ZcrTime2 = ZcrTime_data.field001[1:*,90] ; yr 
 EnrichmentTime2 = ZcrTime2 - FirstStarTime2 ; yr 
 
-set_name = 'set63' 
+; set_name = 'set63' 
+set_name = 'set171' 
 FirstStarTime_data = read_ascii(strtrim(set_name)+'/halos_Firststartimecold.out', $
                                 template=stars_template)
 FirstStarTime3 = FirstStarTime_data.field001[1:*,90] ; yr 
@@ -39,6 +42,7 @@ ZcrTime3 = ZcrTime_data.field001[1:*,90] ; yr
 EnrichmentTime3 = ZcrTime3 - FirstStarTime3 ; yr 
 
 set_name = 'set70' 
+; set_name = 'set126' 
 FirstStarTime_data = read_ascii(strtrim(set_name)+'/halos_Firststartimecold.out', $
                                 template=stars_template)
 FirstStarTime4 = FirstStarTime_data.field001[1:*,490] ; yr 
@@ -118,6 +122,27 @@ case opt of
       ;; plot, HaloMass, FirstStarTime, /ylog, /xlog, xtitle='!6halo mass', $
       ;;       ytitle='time of first star formation'
       oplot, HaloMass, FirstStar_dt, color=2
+   end
+   9: begin
+
+      set_plot, 'ps'
+      device, filename='ztime.ps', xsize=7.0, ysize=7.0, /inches, color=1, yoffset=1.0
+
+      plot, HaloMass, EnrichmentTime, /ylog, /xlog, yrange=[1.0e5,1.0e10], $
+            xtitle='!6halo mass at z=0 (M!D!9n!X!N)', thick=3, $
+            ytitle='!6self-enrichment time scale (yr)', xrange=[1.0e9,1.0e12]
+      oplot, HaloMass2, EnrichmentTime2, linestyle=2, thick=3
+      oplot, HaloMass3, EnrichmentTime3, linestyle=3, thick=3
+
+      EnrichmentTime4 = smooth(EnrichmentTime4, 4) 
+      oplot, HaloMass4, EnrichmentTime4, color=2, thick=3
+      legend, ['t!Ddelay!N=0 (fiducial; low mass IMF)', $
+               't!Ddelay!N=0 (fiducial; high mass IMF)', 't!Ddelay!N=10!E11!Nyr', $
+               't!Ddelay!N=10!E12!Nyr'], $
+              linestyle=[0,0,2,3], thick=[3,3,3,3], color=[-1,2,-1,-1], charsize=1.1, /bottom
+      device, /close_file
+      set_plot, 'X'
+
    end
 endcase
 

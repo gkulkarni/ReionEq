@@ -27,7 +27,7 @@ END
 PRO lf, set_name, row, opt 
 
   ; Plots luminosity function from our Pop3 model in variety of ways.
-  window, xsize=1000, ysize=1000
+  window, xsize=750, ysize=750
   Device, decomposed=0
   TvLCT, 255, 0, 0, 2 
   !P.charsize = 2.0

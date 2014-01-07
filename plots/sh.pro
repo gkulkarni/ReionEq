@@ -7,233 +7,147 @@
 ; reion.  This plot was used in paper. 
 
 ;; set_plot, 'ps'
-;; device, filename='sh.ps', xsize=7.0, ysize=7.0, /inches, color=1, yoffset=1.0
+;; device, filename='sh.ps', xsize=7.0, ysize=7.0, /inches, color=1,
+;; yoffset=1.0
 
-window, xsize=700, ysize=700
-Device, decomposed=0
-TvLCT, 255, 0, 0, 2 
-TvLCT, 0, 127, 255, 3
-TvLCT, 255, 255, 0, 4
-!P.charsize = 1.5
-!P.thick = 1.0
+PRO sh, opt 
 
-erase
-multiplot, [1,2], mXtitle='!6z', mXtitsize='1.5', mytitsize='1.5', $
-           mYtitoffset=1.5, mXtitoffset=1.5, /doyaxis
+  window, xsize=700, ysize=700
+  Device, decomposed=0
+  TvLCT, 255, 0, 0, 2 
+  TvLCT, 0, 127, 255, 3
+  TvLCT, 255, 255, 0, 4
+  !P.charsize = 1.5
+  !P.thick = 1.0
 
-restore, 'mmintemplate.sav'
-mmin_data = read_ascii('set68/mmin.out', template=mmintemplate) 
-z = mmin_data.field1
-mminc = mmin_data.field2
-mminh = mmin_data.field3
-mminav = mmin_data.field4
+  erase
+  multiplot, [1,2], mXtitle='!6z', mXtitsize='1.5', mytitsize='1.5', $
+             mYtitoffset=1.5, mXtitoffset=1.5, /doyaxis
 
-;; plot, z, mminav, /xlog, /ylog, xrange=[1,100], xtitle='!6z', ytitle='M!Dmin!N', linestyle=1
-;; oplot, z, mminh, color=4, linestyle=5
-;; oplot, z, mminc, color=3, linestyle=1
+  restore, 'mmintemplate.sav'
+  mmin_data = read_ascii('set159/mmin.out', template=mmintemplate) 
+  z = mmin_data.field1
+  mminc = mmin_data.field2
+  mminh = mmin_data.field3
+  mminav = mmin_data.field4
 
-mminh=alog10(mminh)+10.0
-mminav=alog10(mminav)+10.0
-sol = "156B
-sun = '!9' + string(sol) + '!X'
-plot, z, mminh, /xlog, xrange=[1,100], linestyle=5, ytitle = 'log!D10!N(M/M!D' + sun + '!N)', yrange=[6,12]
-oplot, z, mminav, linestyle=1
+  mminh=alog10(mminh)+10.0
+  mminav=alog10(mminav)+10.0
+  plot, z, mminh, /xlog, xrange=[1,100], linestyle=5, ytitle = 'log!D10!N(M/M!D!9n!X!N)', yrange=[6,12]
+  oplot, z, mminav, linestyle=1
 
-restore, 'halo_template.sav'
-halos_data = read_ascii('set68/halos.out', template=stars_template)
+  restore, 'halo_template.sav'
+  halos_data = read_ascii('set159/halos.out', template=stars_template)
 
-halos = halos_data.field001[250,*]
-halos=alog10(halos)+10.0
-oplot, z, halos, color=2
+  halos = halos_data.field001[250,*]
+  halos=alog10(halos)+10.0
+  oplot, z, halos, color=2
 
-halos = alog10(halos_data.field001[140,*])+10.0
-oplot, z, halos, color=3
+  halos = alog10(halos_data.field001[140,*])+10.0
+  oplot, z, halos, color=3
 
-halos = alog10(halos_data.field001[100,*])+10.0
-oplot, z, halos
+  halos = alog10(halos_data.field001[100,*])+10.0
+  oplot, z, halos
 
-xyouts, 30.0, 10.0, 'model 3', charsize=2.0, alignment=0.5
+  xyouts, 30.0, 10.0, 'model 3', charsize=2.0, alignment=0.5
 
-multiplot 
+  multiplot 
 
-;---------------------------------------
+  case opt of 
 
-;; zn_data = read_ascii('set68/halos_Zn.out', template=stars_template)
-;; fe_data =  read_ascii('set68/halos_fe.out', template=stars_template)
+     1: begin 
+        solar = 1.17
+        o_data = read_ascii('set126/halos_o.out', template=stars_template)
+        si_data =  read_ascii('set126/halos_Si.out', template=stars_template)
 
-;; zn = zn_data.field001[250,*]
-;; fe = fe_data.field001[250,*]
-;; znbyfe = fltarr(100)
-;; for i = 0, 99 do begin 
-;;    if (zn[0,i] eq 0.0) then begin 
-;;       znbyfe[i] = -10.0
-;;    endif else begin 
-;;       znbyfe[i] = alog10(abs(zn[0,i]/fe[0,i])) + 3.07 
-;;    endelse
-;; endfor 
-;; plot, z, znbyfe, /xlog, xrange=[1,100], yrange=[-1,0], xstyle=1
-;; oplot, z, znbyfe, color=2
+        o = o_data.field001[100,*]
+        si = si_data.field001[100,*]
+        len = size(o, /n_elements)
+        obysi = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (o[0,i] eq 0.0) then begin 
+              obysi[i] = -10.0
+           endif else begin 
+              obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
+           endelse
+        endfor 
+        plot, z, obysi, /xlog, xrange=[1,100], yrange=[-1,1], ytitle='[O/Si]', xstyle=1
 
-;; zn = zn_data.field001[100,*]
-;; fe = fe_data.field001[100,*]
-;; znbyfe = fltarr(100)
-;; for i = 0, 99 do begin 
-;;    if (zn[0,i] eq 0.0) then begin 
-;;       znbyfe[i] = -10.0
-;;    endif else begin 
-;;       znbyfe[i] = alog10(abs(zn[0,i]/fe[0,i])) + 3.07 
-;;    endelse
-;; endfor 
-;; oplot, z, znbyfe, color=3
+        o = o_data.field001[140,*]
+        si = si_data.field001[140,*]
+        obysi = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (o[0,i] eq 0.0) then begin 
+              obysi[i] = -10.0
+           endif else begin 
+              obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
+           endelse
+        endfor 
+        oplot, z, obysi, color=3
 
-;; zn = zn_data.field001[100,*]
-;; fe = fe_data.field001[100,*]
-;; znbyfe = fltarr(100)
-;; for i = 0, 99 do begin 
-;;    if (zn[0,i] eq 0.0) then begin 
-;;       znbyfe[i] = -10.0
-;;    endif else begin 
-;;       znbyfe[i] = alog10(abs(zn[0,i]/fe[0,i])) + 3.07 
-;;    endelse
-;; endfor 
-;; oplot, z, znbyfe, color=4
+        o = o_data.field001[250,*]
+        si = si_data.field001[250,*]
+        obysi = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (o[0,i] eq 0.0) then begin 
+              obysi[i] = -10.0
+           endif else begin 
+              obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
+           endelse
+        endfor 
+        oplot, z, obysi, color=2
+        vline, 6.0, linestyle=2
 
-;---------------------------------------
+        multiplot, /reset 
+        close, /all 
+     end
 
-;; solar = -1.87 ; O/H 
-;; o_data = read_ascii('set22/halos_o.out', template=stars_template)
-;; gas_data =  read_ascii('set22/halos_gas.out', template=stars_template)
+     2: begin 
+        solar = 0.41
+        c_data = read_ascii('set125/halos_c.out', template=stars_template)
+        fe_data =  read_ascii('set125/halos_fe.out', template=stars_template)
 
-;; o = o_data.field001[200,*]
-;; gas = gas_data.field001[200,*]
-;; obyh = fltarr(100)
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; plot, z, obyh, /xlog, xrange=[1,100], yrange=[-8,0], ytitle='[O/H]'
-;; oplot, z, obyh, color=2
+        c = c_data.field001[100,*]
+        fe = fe_data.field001[100,*]
+        len = size(c, /n_elements)
+        cbyfe = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (c[0,i] eq 0.0) then begin 
+              cbyfe[i] = -10.0
+           endif else begin 
+              cbyfe[i] = alog10(abs(c[0,i]/fe[0,i])) - solar 
+           endelse
+        endfor 
+        plot, z, cbyfe, /xlog, xrange=[1,100], yrange=[-1,1], ytitle='[C/Fe]', xstyle=1
 
-;; o = o_data.field001[150,*]
-;; gas = gas_data.field001[150,*]
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; oplot, z, obyh, color=3
+        c = c_data.field001[140,*]
+        fe = fe_data.field001[140,*]
+        cbyfe = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (c[0,i] eq 0.0) then begin 
+              cbyfe[i] = -10.0
+           endif else begin 
+              cbyfe[i] = alog10(abs(c[0,i]/fe[0,i])) - solar 
+           endelse
+        endfor 
+        oplot, z, cbyfe, color=3
 
-;; o = o_data.field001[100,*]
-;; gas = gas_data.field001[100,*]
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; oplot, z, obyh
+        c = c_data.field001[250,*]
+        fe = fe_data.field001[250,*]
+        cbyfe = fltarr(len)
+        for i = 0, len-1 do begin 
+           if (c[0,i] eq 0.0) then begin 
+              cbyfe[i] = -10.0
+           endif else begin 
+              cbyfe[i] = alog10(abs(c[0,i]/fe[0,i])) - solar 
+           endelse
+        endfor 
+        oplot, z, cbyfe, color=2
+        vline, 6.0, linestyle=2
 
-;----------------------------------------------------------------
-
-;; solar = -2.78 ; O/H 
-;; o_data = read_ascii('set22/halos_fe.out', template=stars_template)
-;; gas_data =  read_ascii('set22/halos_gas.out', template=stars_template)
-
-;; o = o_data.field001[250,*]
-;; gas = gas_data.field001[250,*]
-;; obyh = fltarr(100)
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; plot, z, obyh, /xlog, xrange=[1,100], yrange=[-4,-1.5], ytitle='[Fe/H]', xstyle=1
-;; oplot, z, obyh, color=2
-
-;; o = o_data.field001[100,*]
-;; gas = gas_data.field001[100,*]
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; oplot, z, obyh, color=3
-
-;; o = o_data.field001[100,*]
-;; gas = gas_data.field001[100,*]
-;; for i = 0, 99 do begin 
-;;    mH = gas[0,i]*0.71 
-;;    if (o[0,i] eq 0.0) then begin 
-;;       obyh[i] = -10.0
-;;    endif else begin 
-;;       obyh[i] = alog10(abs(o[0,i]/mH)) - solar 
-;;    endelse
-;; endfor 
-;; oplot, z, obyh
-
-;----------------------------------------------------------------
-
-solar = 1.17
-o_data = read_ascii('set68/halos_o.out', template=stars_template)
-si_data =  read_ascii('set68/halos_Si.out', template=stars_template)
-
-o = o_data.field001[100,*]
-si = si_data.field001[100,*]
-len = size(o, /n_elements)
-obysi = fltarr(len)
-for i = 0, len-1 do begin 
-   if (o[0,i] eq 0.0) then begin 
-      obysi[i] = -10.0
-   endif else begin 
-      obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
-   endelse
-endfor 
-plot, z, obysi, /xlog, xrange=[1,100], yrange=[-1,1], ytitle='[O/Si]', xstyle=1
-; oplot, z, obysi, color=2
-
-
-o = o_data.field001[140,*]
-si = si_data.field001[140,*]
-obysi = fltarr(len)
-for i = 0, len-1 do begin 
-   if (o[0,i] eq 0.0) then begin 
-      obysi[i] = -10.0
-   endif else begin 
-      obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
-   endelse
-endfor 
-oplot, z, obysi, color=3
-
-o = o_data.field001[250,*]
-si = si_data.field001[250,*]
-obysi = fltarr(len)
-for i = 0, len-1 do begin 
-   if (o[0,i] eq 0.0) then begin 
-      obysi[i] = -10.0
-   endif else begin 
-      obysi[i] = alog10(abs(o[0,i]/si[0,i])) - solar 
-   endelse
-print, i, z[i], o[0,i], si[0,i] 
-endfor 
-oplot, z, obysi, color=2
-vline, 6.0, linestyle=2
-
-multiplot, /reset 
-close, /all 
+        multiplot, /reset 
+        close, /all 
+     end
+  endcase
 
 END
