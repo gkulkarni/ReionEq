@@ -46,6 +46,7 @@ MODULE STORAGE
   INTEGER :: LCN, COUNTR, POSTOCOUNTER 
   REAL(KIND = PREC), DIMENSION(:,:), ALLOCATABLE :: LBURST, sfrarr_halocalc_hot, &
        &sfrarr_halocalc_cold, sfrarr_halocalc, sd93_lambda
+
   integer, dimension(:,:), allocatable :: halopop_hot, halopop_cold 
   REAL(KIND=PREC), DIMENSION(:,:,:), ALLOCATABLE :: YIELDS 
   logical, dimension(:), allocatable :: NotEnrichedYet_hot, NotEnrichedYet_cold 
@@ -53,5 +54,8 @@ MODULE STORAGE
   real(kind=prec), dimension(:,:,:), allocatable :: haloyield_nonira_array, ejfrac_nonira_array
   real(kind=prec), dimension(:,:,:,:), allocatable :: haloyield_species_nonira_array
   real(kind=prec), dimension(:,:), allocatable :: ejrate_array 
+
+  integer, dimension(:), allocatable :: countr_old 
+
 END MODULE STORAGE
 
