@@ -67,6 +67,9 @@ sample : $(FORSAMPLE) sample_ns.o
 deltat : $(FORDELTAT) deltat.o 
 	$(FC) $(FFLAGS) -o deltat $(FORDELTAT) deltat.o 
 
+test_mergerrate : constants.o storage.o interfaces.o merger_rate.o Test_MergerRate.o 
+	$(FC) $(FFLAGS) -o test_mergerrate constants.o storage.o interfaces.o merger_rate.o Test_MergerRate.o 
+
 .PHONY : clean
 clean :
 	-rm -rf *.mod *.o 
