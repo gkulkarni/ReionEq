@@ -16,7 +16,8 @@ OBJECTS = constants.o storage.o interfaces.o srcov.o interpolate.o dqage.o \
 	interpolate2.o ejrate.o bi_interpolate2.o getmet.o haloyield.o\
 	sfr_rollinde.o rtnewt.o calculate_nuintegral.o ejfrac.o outfrac.o\
 	haloyield_species.o ngammafrac.o ejfrac_nonira.o outfrac_nonira.o\
-	haloyield_nonira.o haloyield_species_nonira.o hallum.o hallum2.o scale_sed.o
+	haloyield_nonira.o haloyield_species_nonira.o hallum.o hallum2.o\
+	scale_sed.o merger_rate.o 
 
 REOBJ = constants.o storage.o dqage.o d1mach.o dqk61.o dqk51.o \
 	dqk41.o dqk31.o dqk21.o dqk15.o dqpsrt.o
