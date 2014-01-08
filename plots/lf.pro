@@ -89,8 +89,9 @@ PRO lf, set_name, row, opt
      endelse
   endfor
 
-                                ; Below I create a toy luminosity assignment to study the LF. 
-                                ; Try opt=4 to understand the difference from the model prediction.
+  
+  ;; Below I create a toy luminosity assignment to study the LF. 
+  ;; Try opt=4 to understand the difference from the model prediction.
   l_fit = fltarr(n_indices)
   lf_fit = fltarr(n_indices)
   lf_schechter_fit = fltarr(n_indices)
