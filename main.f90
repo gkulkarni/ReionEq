@@ -456,7 +456,7 @@ PROGRAM REION
   write (58,*) 'stmass_uplimit=', stmass_uplimit 
   write (58,*) 'eta=', eta
   write (58,*) 'Enrich_time_lag2=', Enrich_time_lag2
-
+  write (58,*) 'starburst_duty_cycle=', starburst_duty_cycle
 
   do 
      countr = countr + 1 
