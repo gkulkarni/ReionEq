@@ -1,4 +1,4 @@
-PRO compare_sfr, burst_input_file, nonburst_input_file, row, duty_cycle 
+PRO compare_sfr, burst_input_file, nonburst_input_file, row, duty_cycle
 
   ;; File: compare_sfr.pro 
   ;;  Cre: 2014-01-07 
@@ -27,6 +27,11 @@ PRO compare_sfr, burst_input_file, nonburst_input_file, row, duty_cycle
 
   plot, burst_data_at_selected_redshift, /ylog 
   oplot, nonburst_data_at_selected_redshift, linestyle=2
+
+  ;; Use optional code below if you want to compare above quantities
+  ;; to the halo mass function. 
+  massfn_data = read_ascii("set174/nofmc.out", template=stars_template)
+  massfn_data_at_selected_redshift = massfn_data.field001(lcolumn:*, row)
 
 END
 
