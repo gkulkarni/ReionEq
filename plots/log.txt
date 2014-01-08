@@ -1,0 +1,85 @@
+So the problem with set112 is that the MFP suddenly decreased from z =
+4.5 to 4.
+
+I am now making 2 changes to the code: (1) prohibiting f_m and deltac
+from decreasing, and (2) prohibiting them from getting NaN.
+
+Are there ways to write up the thing without getting the 10^9 plot right? 
+
+-- Do not show the plot. Just say that the 10^8 is marginally
+   consistent. 10^9 will be even worse and is already ruled out by
+   beta observations.
+
+I think I have found the main cause behind the code crash.  It is
+creashing because of NaN gascoolingrate, which happens because the
+[Fe/H] goes haywire.
+
+Check that our t_lag implementation in haloyield and ejrate is OK. 
+
+---------------      
+
+The way you have currently implemented t_lag, you only use it to set
+an upper bound on stellar ages (i.e. a lower bound on stellar masses)
+that are taken in the integral.
+
+This is OK.  But then you should consider the SFR of these stars at t
+- t_age - t_lag.
+
+This way the following happens: If a star with age t_age is born at
+time t_0.  Then its SN will explode at t_age + t_0.  But its
+contribution to metallicity will be counted at t_age + t_0 + t_lag. 
+
+Currently, this star is not getting counted till t_age + t_0 + t_lag.
+That is OK.  But its contribution is being over-estimated! 
+
+---------------      
+
+1. Is added t-t_lag for m_d correct? 
+
+   Yes. And we have done this correctly.
+
+2. Is using t-st_ageyr instead of t-st_ageyr-t_lag correct? 
+
+   No. Because you are taking the SFR at the wrong time! 
+
+3. But if this was a mistake why did we see any lag at all in the results?
+
+   Because we are doing the usual calculation with a restriction on
+   the yield integral.  Therefore at any given z, the yields are now
+   reduced.  Therefore the metallicity evolution shows a lag as
+   expected.  This also enhances the SFR of PopIII as usual.
+
+4. What do we expect in the results when t_lag is implemented correctly?
+
+   At a given redshift, yields would be reduced even more.  This will
+   enhance Pop III contribution dramatically.  (In fact, we may end up
+   having a reverse problem of too much Pop III.  In which case we may
+   have to put a gradual release of metals, as Joe suggested.)
+
+5. At high redshift, t-t_lag < 0 (in haloyield_nonira). How does this
+   affect the results?
+
+   This is potentially a problem.  But in practise the interpolator
+   handles it well as negative age is just less than zero so the
+   integral cuts-off.  You can put trap and set it to t=0 if you want. 
+
+---------------      
+
+Suppose we were to include Joe's style of enrichment.  How should we
+do that?
+
+By setting up a normalised, invertible function. 
+
+---------------      
+
+So we have now solved our main problem.  How to proceed next: 
+
+* Get 10^8 and 0 t_lag results again just to check. 
+* Get 10^9 results for both IMFs. 
+  -- Maybe remove all the .ne. statements from main.f90 and then get a copy of results
+  -- Remember to put in git first! 
+* Get DLA enrichment results 
+* Finish paper 
+
+
+
