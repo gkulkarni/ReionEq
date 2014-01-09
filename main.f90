@@ -1012,6 +1012,7 @@ PROGRAM REION
         end if
         burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
              &* dzdt(z) * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+        mstardot_insitu = mstardot_insitu + abs(burst_enhancement) 
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
         if (sfrarr_halocalc_cold(countr-2,i) .eq. 0.0_prec) then 
@@ -1023,7 +1024,7 @@ PROGRAM REION
         return_fraction = ejfrac_nonira(z,1,i)
         ejfrac_nonira_array(countr-1, i, 1) = return_fraction 
 
-        mstardot = mstardot_insitu - return_fraction + abs(burst_enhancement) ! 10^10 M_solar yr^-1
+        mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
         mstardot_halosc(i) = mstardot ! 10^10 M_solar yr^-1
         mstar_halosc(i) = mstar_halosc(i) + dz*dtdz(z)*mstardot ! 10^10 M_solar yr^-1
 
@@ -1318,6 +1319,7 @@ PROGRAM REION
         end if
         burst_enhancement = MajorMergerRate(m_halosh(i)*1.0e10_prec,z) &
              &* dzdt(z) * m_halosh(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+        mstardot_insitu = mstardot_insitu + abs(burst_enhancement)
         sfrarr_halocalc_hot(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
         if (sfrarr_halocalc_hot(countr-2,i) .eq. 0.0_prec) then 
@@ -1329,7 +1331,7 @@ PROGRAM REION
         return_fraction = ejfrac_nonira(z, 2, i) ! 10^10 M_solar yr^-1 
         ejfrac_nonira_array(countr-1, i, 2) = return_fraction 
 
-        mstardot = mstardot_insitu - return_fraction + abs(burst_enhancement) ! 10^10 M_solar yr^-1
+        mstardot = mstardot_insitu - return_fraction ! 10^10 M_solar yr^-1
         mstardot_halosh(i) = mstardot ! 10^10 M_solar yr^-1
         mstar_halosh(i) = mstar_halosh(i) + dz*dtdz(z)*mstardot ! 10^10 M_solar yr^-1
 
