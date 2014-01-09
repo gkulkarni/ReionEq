@@ -53,7 +53,7 @@ legend, ['Hopkins and Beacom 06','Bouwens et al. 11 (>0.06L!D*,z=3!N)'], $
         linestyle=[0,0], psym=[8,8], color=[2,5], /bottom
 
 ; Plot luminosity-limited SFR result.
-readcol, 'set58/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
+readcol, 'set186/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
 limsfr = limsfr*0.5
 oplot, z, limsfr, psym=-6, color=3
 
