@@ -1050,6 +1050,7 @@ PROGRAM REION
         fout = outfrac_nonira(m_halosc(i),z,1,i) ! 10^10 M_solar yr^-1
         mgasdot = mgasdot - fout ! 10^10 M_solar yr^-1
         mgas_halosc(i) = mgas_halosc(i) + dz*dtdz(z)*mgasdot ! 10^10 M_solar 
+        if (mgas_halosc(i) < 0.0_prec) mgas_halosc(i) = 0.0_prec 
 
         !----------------------------
 
@@ -1364,7 +1365,8 @@ PROGRAM REION
         fout = outfrac_nonira(m_halosh(i),z,2,i) ! 10^10 M_solar yr^-1
         mgasdot = mgasdot - fout ! 10^10 M_solar yr^-1
         mgas_halosh(i) = mgas_halosh(i) + dz*dtdz(z)*mgasdot ! 10^10 M_solar 
-
+        if (mgas_halosh(i) < 0.0_prec) mgas_halosh(i) = 0.0_prec 
+        
         !----------------------------
 
         if (mgas_halosh(i) == 0.0_prec) then 
