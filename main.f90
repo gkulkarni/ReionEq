@@ -259,7 +259,7 @@ PROGRAM REION
   open(unit=83, file='halos_Firststartimehot.out', status='unknown', action='write') 
   open(unit=84, file='halos_Firststartimecold.out', status='unknown', action='write') 
 
-  open(unit=69, file='aux_fe.out', status='unknown', action='write') 
+  open(unit=69, file='aux_halosh.out', status='unknown', action='write') 
   open(unit=70, file='aux_o.out', status='unknown', action='write') 
   open(unit=71, file='aux_si.out', status='unknown', action='write') 
   open(unit=72, file='aux_zn.out', status='unknown', action='write') 
@@ -1013,6 +1013,7 @@ PROGRAM REION
         burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
              &* dzdt(z) * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
         aux_halosc(i) = abs(burst_enhancement) ! 10^10 M_solar yr^-1 
+        aux_halosh(i) = mstardot_insitu
         mstardot_insitu = mstardot_insitu + abs(burst_enhancement) 
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
@@ -1563,6 +1564,7 @@ PROGRAM REION
      write (80,'(F4.1,270E11.3E2)') z, sfrcontrib_halosc 
 
      write (49,'(F4.1,270E11.3E2)') z, aux_halosc
+     write (69,'(F4.1,270E11.3E2)') z, aux_halosh ! Beware: name `aux_halosh' is deceptive! 
 
      write (50,'(F4.1,270E11.3E2)') z, q*m_halosh + (1.0_prec-q)*m_halosc 
      write (51,'(F4.1,270E11.3E2)') z, q*mstar_halosh + (1.0_prec-q)*mstar_halosc 
