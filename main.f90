@@ -1012,6 +1012,7 @@ PROGRAM REION
         end if
         burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
              &* dzdt(z) * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+        aux_halosc(i) = abs(burst_enhancement) ! 10^10 M_solar yr^-1 
         mstardot_insitu = mstardot_insitu + abs(burst_enhancement) 
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
