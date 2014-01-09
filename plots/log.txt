@@ -81,5 +81,16 @@ So we have now solved our main problem.  How to proceed next:
 * Get DLA enrichment results 
 * Finish paper 
 
+----------------
+
+9 January 2014 
+
+Goal: Remove NaNs and see effect of starbursts on luminosity function. 
+
+One option is to simply prohibit various quantities from going to zero.
+
+Option 2: further lower starbust duty cycle 
+
+Actually NaNs are appearing only for haloes that have no gas at all (sub-threshold).
 
 
