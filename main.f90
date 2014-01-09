@@ -436,7 +436,7 @@ PROGRAM REION
   end do
 
   Zlim = 10.0_prec 
-  maglim = -18.0_prec 
+  maglim = -21.0_prec 
   eta = 1.65_prec ! halo density profile index used in mcooldot below.
 
   starburst_duty_cycle = 0.01_prec ! See plots/compare_sfr.pro.
