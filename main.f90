@@ -1010,10 +1010,18 @@ PROGRAM REION
         else 
            mstardot_insitu = fstar * mcoolgas_halosc(i) / tdyn ! 10^10 M_solar yr^-1
         end if
-        burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
-             &* dzdt(z) * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+
+        if (mgas_halosc(i) == 0.0_prec) then 
+           burst_enhancement = 0.0_prec 
+        else 
+           burst_enhancement = MajorMergerRate(m_halosc(i)*1.0e10_prec,z) &
+                &* dzdt(z) * m_halosc(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+           burst_enhancement = abs(burst_enhancement) 
+        end if
+
         aux_halosc(i) = abs(burst_enhancement) ! 10^10 M_solar yr^-1 
         aux_halosh(i) = mstardot_insitu
+
         mstardot_insitu = mstardot_insitu + abs(burst_enhancement) 
         sfrarr_halocalc_cold(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
@@ -1319,8 +1327,15 @@ PROGRAM REION
         else 
            mstardot_insitu = fstar * mcoolgas_halosh(i) / tdyn ! 10^10 M_solar yr^-1
         end if
-        burst_enhancement = MajorMergerRate(m_halosh(i)*1.0e10_prec,z) &
-             &* dzdt(z) * m_halosh(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+
+        if (mgas_halosh(i) == 0.0_prec) then 
+           burst_enhancement = 0.0_prec 
+        else 
+           burst_enhancement = MajorMergerRate(m_halosh(i)*1.0e10_prec,z) &
+                &* dzdt(z) * m_halosh(i) * starburst_duty_cycle ! 10^10 M_solar yr^-1 
+           burst_enhancement = abs(burst_enhancement) 
+        end if
+
         mstardot_insitu = mstardot_insitu + abs(burst_enhancement)
         sfrarr_halocalc_hot(countr-1,i) = mstardot_insitu*1.0e10_prec ! M_solar yr^-1 
 
