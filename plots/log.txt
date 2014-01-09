@@ -93,4 +93,15 @@ Option 2: further lower starbust duty cycle
 
 Actually NaNs are appearing only for haloes that have no gas at all (sub-threshold).
 
+NaNs gone! 
+
+With maglim = -19 high-z SFR matches observations perfectly.  Also at
+low z.  There is some problem at intermediate z.
+
+Next steps: 
+
+  1. See if you can get the z = 2-3 portion of SFR right.
+  2. Check maglim value for observations and use that in the code. 
+
+----------------
 
