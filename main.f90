@@ -436,10 +436,10 @@ PROGRAM REION
   end do
 
   Zlim = 10.0_prec 
-  maglim = -21.0_prec 
+  maglim = -19.0_prec 
   eta = 1.65_prec ! halo density profile index used in mcooldot below.
 
-  starburst_duty_cycle = 0.01_prec ! See plots/compare_sfr.pro.
+  starburst_duty_cycle = 1.0e-2_prec ! See plots/compare_sfr.pro.
   
   write (58,*) 'initial_redshift=', initial_redshift 
   write (58,*) 'final_redshift=', final_redshift 
