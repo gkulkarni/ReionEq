@@ -214,7 +214,7 @@ plotsym, 0, 0.5, /FILL
 tick = replicate(' ',3)
 plot, rs, sfe, psym=8, /ylog, /xlog, xrange=[1,50], $
       ytitle='SFRD (M!D!9n!N!X yr!E-1!N Mpc!E-3 !N)', xstyle=1, yrange=[1.0e-6,1], $
-      ytickformat='Exp1', position=[x3,0.1,x3+plotwidth,0.7], xtitle='!6redshift', $
+      ytickformat='Exp2', position=[x3,0.1,x3+plotwidth,0.7], xtitle='!6redshift', $
       /nodata, xtickname=tick
 axlabel, [1.0, 10.0, 50.0], /xaxis, charsize=1.5, format='(I)'
 oplot, rs, sfe, psym=8, color=2
