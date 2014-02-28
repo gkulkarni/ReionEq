@@ -103,10 +103,10 @@ MODULE CONSTANTS
        MSUP = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 2 IMF) 
        IMF_SLOPE = 1.3_PREC, & ! (Slope of IMF - 1), 1.3 for Salpeter, 1.7 for Scalo
        OUTFLOW_EFFICIENCY = 1.0e-6_PREC, & ! See outflow.f90 
-       MINF_POP3 = 100.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
-       MSUP_POP3 = 260.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
-!!$       MINF_POP3 = 1.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
-!!$       MSUP_POP3 = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
+!!$       MINF_POP3 = 100.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
+!!$       MSUP_POP3 = 260.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
+       MINF_POP3 = 1.0_PREC, & ! M_solar; Minimum stellar mass (for Pop 3 IMF) 
+       MSUP_POP3 = 100.0_PREC, & ! M_solar; Maximum stellar mass (for Pop 3 IMF) 
        DATA_MMIN = 12.07_PREC, & ! M_Solar; Minimum stellar mass in yields data time 
        DATA_MMAX = 266.0_PREC, & ! M_Solar; Maximum stellar mass in yields data time 
      ! DATA_MMAX = 40.22_PREC, & ! M_Solar; Maximum stellar mass in yields data time 
@@ -120,7 +120,8 @@ MODULE CONSTANTS
        STELLAR_INTEGRAL_MULTIPLIER = 1.25_prec, & 
 !!$       Enrich_time_lag = 0.0 ! yr ; used in haloyield_nonira.f90 
        Enrich_time_lag = 0.0e0_prec, & ! yr ; used in haloyield_nonira.f90 
-       Enrich_time_lag2 = 1.0e12_prec
+       ! Enrich_time_lag2 = 1.0e12_prec
+       Enrich_time_lag2 = 0.0_prec
 
 
   INTEGER, PARAMETER :: DATA_COLUMNS = 25
