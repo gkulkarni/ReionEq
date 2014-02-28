@@ -120,9 +120,7 @@ MODULE CONSTANTS
        STELLAR_INTEGRAL_MULTIPLIER = 1.25_prec, & 
 !!$       Enrich_time_lag = 0.0 ! yr ; used in haloyield_nonira.f90 
        Enrich_time_lag = 0.0e0_prec, & ! yr ; used in haloyield_nonira.f90 
-       ! Enrich_time_lag2 = 1.0e12_prec
-       Enrich_time_lag2 = 0.0_prec
-
+       Enrich_time_lag2 = 1.0e12_prec
 
   INTEGER, PARAMETER :: DATA_COLUMNS = 25
 
