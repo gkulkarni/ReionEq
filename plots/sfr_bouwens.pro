@@ -17,7 +17,7 @@ sfe = 10.0^sf
 plotsym, 0, 1, /FILL
 plot, rs, sfe, psym=8, /ylog, /xlog, xrange=[5.0e-1,30], $
       ytitle='!6SFR (Msun yr!E-1!N Mpc!E-3 !N)', $
-      xstyle=1, yrange=[1.0e-7,1], ytickformat='Exponent', $
+      xstyle=1, yrange=[1.0e-5,1], ytickformat='Exponent', $
       xtitle='z', /nodata 
 oplot, rs, sfe, psym=8, color=2
 yup = 10.0^(sf+sferr*0.5)
@@ -43,7 +43,7 @@ arrow, x0, y0, x1, y1, /data, hsize=13.0, color=5
 
 ; Plot our result. 
 restore, 'sfrfiletemplate.sav'
-sfrdata = read_ascii('set58/sfr.out', template=sfrfiletemplate)
+sfrdata = read_ascii('set187/sfr.out', template=sfrfiletemplate)
 sfr_tot = sfrdata.total_sfr*0.5     ; Msun yr^-1 Mpc^-3 
 z = sfrdata.redshift
 oplot, z, sfr_tot 
@@ -52,25 +52,13 @@ oplot, z, sfr_tot
 legend, ['Hopkins and Beacom 06','Bouwens et al. 11 (>0.06L!D*,z=3!N)'], $
         linestyle=[0,0], psym=[8,8], color=[2,5], /bottom
 
-; Plot luminosity-limited SFR result.
-readcol, 'set186/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
-limsfr = limsfr*0.5
-;oplot, z, limsfr, psym=-6, color=3
-
 ;; Plot luminosity-limited SFR result.
 readcol, 'set187/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
-limsfr = limsfr
 oplot, z, limsfr, psym=-6, color=4
 
 ;; Plot luminosity-limited SFR result.
-readcol, 'set188/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
-limsfr = limsfr
-oplot, z, limsfr, psym=-6, color=6
-
-;; Plot luminosity-limited SFR result.
-readcol, 'set39/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
-limsfr = limsfr
-;oplot, z, limsfr, psym=-6, color=7
+readcol, 'set190/sfr.out', z, sfrtot, sfrp2, sfrp3, limsfr, format='f,d,d,d', /silent
+;oplot, z, limsfr, psym=-6, color=6
 
 END 
 
