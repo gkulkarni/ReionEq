@@ -179,6 +179,7 @@ PROGRAM REION
 
   GPH_POP2 = GPH_KERNEL_POP2() 
   GPI_POP2 = GPI_KERNEL_POP2()
+
   GPH_POP3 = GPH_KERNEL_POP3() 
   GPI_POP3 = GPI_KERNEL_POP3()
   TAU = 0.0_PREC 
@@ -439,7 +440,8 @@ PROGRAM REION
   maglim = -19.0_prec 
   eta = 1.65_prec ! halo density profile index used in mcooldot below.
 
-  starburst_duty_cycle = 1.0e-2_prec ! See plots/compare_sfr.pro.
+  ! starburst_duty_cycle = 1.0e-2_prec ! See plots/compare_sfr.pro.
+  starburst_duty_cycle = 0.0_prec ! See plots/compare_sfr.pro.
   
   write (58,*) 'initial_redshift=', initial_redshift 
   write (58,*) 'final_redshift=', final_redshift 
@@ -716,9 +718,7 @@ PROGRAM REION
         tolzin = 1.0e-15_prec 
         oldigmfrac = f_m
         f_m = rtbis(solfm, fmlo, fmhi, tolzin, 'main-fm') 
-
         if (f_m < oldigmfrac) f_m = oldigmfrac 
-
         if (f_m .ne. f_m) f_m = oldigmfrac 
 
         q = 1.0_prec 
@@ -731,9 +731,7 @@ PROGRAM REION
         oldigmdcrit = igmdcrit 
         dlt = rtbis(soldlt, dltlo, dlthi, tolzin, 'main-dlt')
         igmdcrit = dlt 
-
         if (dlt < oldigmdcrit) dlt = oldigmdcrit 
-
         if (dlt .ne. dlt) dlt = oldigmdcrit 
 
         r = clumpfac(igmdcrit)
@@ -767,16 +765,16 @@ PROGRAM REION
 
      !-------------------------
 
-     write (38,'(F4.1,16E11.3E2)') z, q, tau, gammapi, gammapi_pop2, gammapi_pop3, temph, tempc, &
+     write (38,'(F4.1,18E11.3E2)') z, q, tau, gammapi, gammapi_pop2, gammapi_pop3, temph, tempc, &
           &(q*temph+(1.0_prec-q)*tempc), x_ii, dnlldz, lmfp, r, igmdcrit, nphdot, &
-          &temphva, fv
+          &temphva, fv, igmdcrit, f_m 
 
      !-----------------------------
 
      ! Evolve various metal species. 
 
      ofl = outflow(z) ! 10^10 M_solar yr^-1 Mpc^-3 
-     acc = accrate(z) ! 10^10 M_solar yr^-1 Mpc^-3
+     acc = accrate(z) ! 10^10 M_solar yr^-1 Mpc^-3 
      ejc = ejrate(z,0) ! 10^10 M_solar yr^-1 Mpc^-3 
 
      ejrate_array(countr-1, 1) = ejc 
