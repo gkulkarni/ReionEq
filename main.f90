@@ -735,6 +735,7 @@ PROGRAM REION
         if (dlt .ne. dlt) dlt = oldigmdcrit 
 
         r = clumpfac(igmdcrit)
+        r_local = r 
         fv = igmvfrac(igmdcrit) 
         oldlmfp = lmfp 
         lmfp = q**(1.0_prec/3.0_prec)*lmfp0*jnsln/((1.0_prec-fv)**(2.0_prec/3.0_prec)) ! mpc 
