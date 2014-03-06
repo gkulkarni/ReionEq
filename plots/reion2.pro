@@ -4,27 +4,26 @@ PRO reion2, opt
 
      1: begin 
      
-     window, xsize=1500, ysize=500
+     window, xsize=1000, ysize=1000
      Device, decomposed=0
      TvLCT, 255, 0, 0, 2 
      TvLCT, 0, 127, 255, 3
      TvLCT, 255, 255, 0, 4 
      !P.charsize = 2
 
-     readcol, 'set135/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+     readcol, 'set161/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
               lmfp, r, igmdcrit, nphdot, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
   
-     readcol, 'set134/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+     readcol, 'set201/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
               lmfp2, r, igmdcrit, nphdot2, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+     readcol, 'set202/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+              lmfp2, r, igmdcrit, nphdot2, temphva, fv, igmdcrit, fm, $
+              format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
   
-     plot, z, nphdot, /xlog, /ylog, xrange=[10,100]
-     oplot, z2, nphdot2, color=2
-
-     plot, z, lmfp, /xlog, /ylog, xrange=[10,100]
-     oplot, z2, lmfp2, color=2
-
-     plot, z, gammapi, /xlog, /ylog, xrange=[10,100]
-     oplot, z2, gammapi2, color=2
+     plot, z, gammapi, /xlog, /ylog, xrange=[0.1,100]
+     oplot, z2, gammapi2, thick=4
+     oplot, z3, gammapi3, thick=4, linestyle=5
 
   end
 
@@ -90,7 +89,94 @@ PRO reion2, opt
         oplot, z2, sfr2, color=2
         
      end
-     
+
+     4: begin 
+        
+        window, xsize=1000, ysize=1000
+        Device, decomposed=0
+        TvLCT, 255, 0, 0, 2 
+        TvLCT, 0, 127, 255, 3
+        TvLCT, 255, 255, 0, 4 
+        !P.charsize = 2
+
+        readcol, 'set200/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp, r, igmdcrit, nphdot, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        
+        readcol, 'set201/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph2, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva2, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        readcol, 'set202/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph3, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva3, fv, igmdcrit, fm, $
+                 format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        readcol, 'set171/reion.out', z4, q, tau, gammapi2, gpi_p2, gpi_p3, temph4, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva4, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        
+        plot, z, temph, /xlog, /ylog, xrange=[0.1,100]
+        oplot, z2, temph2, thick=4
+        oplot, z3, temph3, thick=4, linestyle=5
+        oplot, z4, temph4, color=2
+
+     end
+
+     4: begin 
+        
+        window, xsize=1000, ysize=1000
+        Device, decomposed=0
+        TvLCT, 255, 0, 0, 2 
+        TvLCT, 0, 127, 255, 3
+        TvLCT, 255, 255, 0, 4 
+        !P.charsize = 2
+
+        readcol, 'set200/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp, r, igmdcrit, nphdot, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        
+        readcol, 'set201/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph2, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva2, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        readcol, 'set202/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph3, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva3, fv, igmdcrit, fm, $
+                 format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        readcol, 'set171/reion.out', z4, q, tau, gammapi2, gpi_p2, gpi_p3, temph4, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva4, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        
+        plot, z, temphva, /xlog, /ylog, xrange=[0.1,100]
+        oplot, z2, temphva2, thick=4
+        oplot, z3, temphva3, thick=4, linestyle=5
+        oplot, z4, temphva4, color=2
+
+     end
+
+     5: begin 
+        
+        window, xsize=1000, ysize=1000
+        Device, decomposed=0
+        TvLCT, 255, 0, 0, 2 
+        TvLCT, 0, 127, 255, 3
+        TvLCT, 255, 255, 0, 4 
+        !P.charsize = 2
+
+        readcol, 'set200/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp, r, igmdcrit, nphdot, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set201/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph2, tempc, avtemp, x_ii2, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva2, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set202/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph3, tempc, avtemp, x_ii3, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva3, fv, igmdcrit, fm, $
+                 format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set171/reion.out', z4, q, tau, gammapi2, gpi_p2, gpi_p3, temph4, tempc, avtemp, x_ii4, dnlldz, $
+                 lmfp2, r, igmdcrit, nphdot2, temphva4, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        plot, z, x_ii, /xlog, /ylog, xrange=[0.1,100]
+        oplot, z2, x_ii2, thick=4
+        oplot, z3, x_ii3, thick=4, linestyle=5
+        oplot, z4, x_ii4, color=2
+
+     end
+
+
   endcase
 
 END
