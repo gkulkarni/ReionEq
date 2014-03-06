@@ -71,21 +71,20 @@ PROGRAM REION
   ! ----------------------------------------
 
   comnum = command_argument_count()
-  if (comnum /= 4) then 
-     write (0, '(a)') 'Usage: ./reion RGNOVD RGNSIZE ZLUM FESC'
-     write (0, '(a)') 'Example: ./reion 4.0 7.746 6.5 0.3'
+  if (comnum /= 1) then 
+     write (0, '(a)') 'Usage: ./reion FESC'
+     write (0, '(a)') 'Example: ./reion 0.3'
      stop
   end if
 
-  CALL GET_COMMAND_ARGUMENT(1, RGNOVDARG) 
-  CALL GET_COMMAND_ARGUMENT(2, RGNSIZEARG) 
-  CALL GET_COMMAND_ARGUMENT(3, ZLUMARG)
-  CALL GET_COMMAND_ARGUMENT(4, FESCARG)
+  CALL GET_COMMAND_ARGUMENT(1, FESCARG)
 
-  READ(RGNOVDARG, '(F10.5)') RGNOVD
-  READ(RGNSIZEARG, '(F10.5)') RGNSIZE
-  READ(ZLUMARG, '(F10.5)') ZLUM
-  READ(FESCARG, '(F10.5)') FESC
+  ! RGNOVD, RGNSIZE, ZLUM are set for backward-compatibility.  None of
+  ! these are used in this version of the code, and it is importnat
+  ! that RGNOVD stays equal to 0.0.
+  RGNOVD = 0.0_prec 
+  RGNSIZE = 7.746_prec 
+  ZLUM = 6.5_prec 
 
   ! fesc_pop2 = 0.1
   fesc_pop2 = fesc 
