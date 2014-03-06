@@ -17,13 +17,13 @@ PRO reion2, opt
      readcol, 'set201/reion.out', z2, q, tau, gammapi2, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
               lmfp2, r, igmdcrit, nphdot2, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
 
-     readcol, 'set203/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+     readcol, 'set204/reion.out', z3, q, tau, gammapi3, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
               lmfp2, r, igmdcrit, nphdot2, temphva, fv, igmdcrit, fm, $
               format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
   
-     plot, z, gammapi, /xlog, /ylog, xrange=[0.1,100]
+     plot, z3, gammapi3, /xlog, /ylog, xrange=[1.0,100]
      oplot, z2, gammapi2, thick=4
-     oplot, z3, gammapi3, thick=4, linestyle=5
+     oplot, z, gammapi, thick=4, linestyle=5
 
   end
 
@@ -332,6 +332,31 @@ PRO reion2, opt
 
      end
 
+     13: begin 
+        
+        window, xsize=1000, ysize=1000
+        Device, decomposed=0
+        TvLCT, 255, 0, 0, 2 
+        TvLCT, 0, 127, 255, 3
+        TvLCT, 255, 255, 0, 4 
+        !P.charsize = 2
+
+        readcol, 'set200/reion.out', z, q, tau, gammapi, gpi_p2, gpi_p3, temph, tempc, avtemp, x_ii, dnlldz, $
+                 lmfp, r, igmdcrit, nphdot, temphva, fv, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set201/reion.out', z2, q2, tau, gammapi2, gpi_p2, gpi_p3, temph2, tempc2, avtemp2, x_ii2, dnlldz, $
+                 lmfp2, r2, igmdcrit2, nphdot2, temphva2, fv2, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set202/reion.out', z3, q3, tau, gammapi3, gpi_p2, gpi_p3, temph3, tempc3, avtemp3, x_ii3, dnlldz, $
+                 lmfp3, r3, igmdcrit3, nphdot2, temphva3, fv3, igmdcrit, fm, $
+                 format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+        readcol, 'set171/reion.out', z4, q4, tau, gammapi2, gpi_p2, gpi_p3, temph4, tempc4, avtemp4, x_ii4, dnlldz, $
+                 lmfp4, r4, igmdcrit4, nphdot2, temphva4, fv4, format='D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D,D', /silent 
+
+        plot, z, q, /xlog, /ylog, xrange=[0.1,100], yrange=[1.0e-10,1.0e1]
+        oplot, z2, q2, thick=4
+        oplot, z3, q3, thick=4, linestyle=5
+        oplot, z4, q4, color=2
+
+     end
 
   endcase
 
